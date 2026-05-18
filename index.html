@@ -142,7 +142,12 @@
           <input type="text" id="inp-name" class="f-input"
             data-i18n-placeholder="placeholderName"
             placeholder="예: 김지우, 환경지킴이123"
-            maxlength="20" autocomplete="new-password" />
+            maxlength="20"
+            autocomplete="off"
+            name="sdgs_nickname_field"
+            readonly
+            onfocus="this.removeAttribute('readonly')"
+            onblur="this.setAttribute('readonly','')" />
           <div class="err-msg" id="e-name" data-i18n="errName">이름을 입력해 주세요.</div>
         </div>
 
@@ -235,13 +240,43 @@
           <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
         </div>
 
-        <!-- Primary action: make card (full-width, prominent) -->
-        <button type="button" class="btn btn-make" id="btn-make">
-          <span class="ms ms-filled">auto_awesome</span>
-          <span data-i18n="btnMakeCard">마스터 카드 만들기</span>
-        </button>
+        <!-- Compact action bar: Make + TXT + JPG in one row -->
+        <div class="step3-actions">
+          <button type="button" class="btn btn-make" id="btn-make">
+            <span class="ms ms-filled">auto_awesome</span>
+            <span data-i18n="btnMakeCard">마스터 카드 만들기</span>
+          </button>
+          <div class="export-bar-btns" id="export-section">
+            <div class="export-btn-wrap" id="export-txt-wrap">
+              <button type="button" class="btn-export-main" id="btn-txt" disabled>
+                <span class="ms export-btn-icon">description</span> TXT
+              </button>
+              <div class="export-dropdown" id="export-txt-dd">
+                <button type="button" class="export-dd-item" id="btn-txt-copy">
+                  <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                </button>
+                <button type="button" class="export-dd-item" id="btn-txt-dl">
+                  <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
+                </button>
+              </div>
+            </div>
+            <div class="export-btn-wrap" id="export-img-wrap">
+              <button type="button" class="btn-export-main" id="btn-img" disabled>
+                <span class="ms export-btn-icon">image</span> JPG
+              </button>
+              <div class="export-dropdown" id="export-img-dd">
+                <button type="button" class="export-dd-item" id="btn-img-copy">
+                  <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                </button>
+                <button type="button" class="export-dd-item" id="btn-img-dl">
+                  <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- Unified card workspace: preview + export bar -->
+        <!-- Card workspace: preview -->
         <div class="card-workspace" id="card-workspace">
           <div class="card-preview-wrap" id="cpw">
             <div class="card-empty">
@@ -249,44 +284,7 @@
               <p data-i18n="cardEmptyHint">위 버튼을 눌러 나만의 카드를 만들어 보세요!</p>
             </div>
           </div>
-
-          <!-- Export bar (revealed when card is ready) -->
-          <div class="export-bar" id="export-section">
-            <span class="export-bar-label" data-i18n="exportTitle">내보내기</span>
-            <div class="export-bar-btns">
-              <div class="export-btn-wrap" id="export-txt-wrap">
-                <button type="button" class="btn-export-main" id="btn-txt" disabled>
-                  <span class="ms export-btn-icon">description</span> TXT
-                </button>
-                <div class="export-dropdown" id="export-txt-dd">
-                  <button type="button" class="export-dd-item" id="btn-txt-copy">
-                    <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
-                  </button>
-                  <button type="button" class="export-dd-item" id="btn-txt-dl">
-                    <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
-                  </button>
-                </div>
-              </div>
-              <div class="export-btn-wrap" id="export-img-wrap">
-                <button type="button" class="btn-export-main" id="btn-img" disabled>
-                  <span class="ms export-btn-icon">image</span> JPG
-                </button>
-                <div class="export-dropdown" id="export-img-dd">
-                  <button type="button" class="export-dd-item" id="btn-img-copy">
-                    <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
-                  </button>
-                  <button type="button" class="export-dd-item" id="btn-img-dl">
-                    <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-
-        <p class="copy-hint" id="copy-hint">
-          <span data-i18n="copyHint">복사 후 패들렛에서 <strong>Ctrl+V</strong>로 붙여넣기!</span>
-        </p>
       </div>
 
     </div><!-- /panel-left -->

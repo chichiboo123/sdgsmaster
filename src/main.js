@@ -50,10 +50,10 @@ function buildSDGGrid() {
     return `
       <button type="button" class="sdg-btn" id="sdg${s.n}" style="background:${s.col}"
         data-sdg="${s.n}" aria-label="${aria}" aria-pressed="false">
+        <span class="sdg-num">${s.n}</span>
+        <span class="sdg-lbl">${esc(s.labels[lang])}</span>
         <img class="sdg-btn-icon" src="${iconPath}" alt="" aria-hidden="true"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='';this.nextElementSibling.nextElementSibling.style.display=''">
-        <span class="sdg-num" style="display:none">${s.n}</span>
-        <span class="sdg-lbl" style="display:none">${esc(s.labels[lang])}</span>
+          onerror="this.style.display='none'">
         <div class="sdg-tip" role="tooltip"><strong>${esc(t1)}</strong><br/>${esc(t2)}</div>
       </button>`;
   }).join('');
@@ -215,10 +215,11 @@ function updateSDGBanner(mainSdg, subSdgs = []) {
    SDG ICON HELPERS
 ============================================= */
 function getSdgIconPath(n, lang) {
+  const base = import.meta.env.BASE_URL;
   if (lang === 'ko') {
-    return `/sdg-icons/ko/logo-${n}_700x700.png`;
+    return `${base}sdg-icons/ko/logo-${n}_700x700.png`;
   }
-  return `/sdg-icons/other/E-WEB-Goal-${String(n).padStart(2, '0')}.png`;
+  return `${base}sdg-icons/other/E-WEB-Goal-${String(n).padStart(2, '0')}.png`;
 }
 
 async function checkLocalIcon(path) {
@@ -304,7 +305,7 @@ async function makeCard() {
   const bg2 = hexAlpha(selMainSDG.col, 0.02);
 
   // Section label texts
-  const secSDG  = lang === 'ko' ? '마스터 SDG' : lang === 'ja' ? 'マスターSDG' : lang === 'id' ? 'SDG Master' : 'Master SDG';
+  const secSDG  = lang === 'ko' ? '마스터 SDGs' : lang === 'ja' ? 'マスターSDGs' : lang === 'id' ? 'SDGs Master' : 'Master SDGs';
   const secDisc = lang === 'ko' ? '발견한 사례' : lang === 'ja' ? '発見した事例' : lang === 'id' ? 'Kasus Ditemukan' : 'Discovered Case';
   const secAct  = lang === 'ko' ? '나의 생각 & 실천' : lang === 'ja' ? 'わたしの考え' : lang === 'id' ? 'Pikiran & Tindakan' : 'My Thoughts & Actions';
 
