@@ -709,8 +709,8 @@ textarea.f-textarea {
 ============================================= */
 .sdg-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
   margin-bottom: 12px;
 }
 
@@ -805,12 +805,13 @@ textarea.f-textarea {
   z-index: 10;
 }
 
-/* Tooltip */
-.sdg-tip {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-6px);
+/* Tooltip — hidden; replaced by global fixed tooltip */
+.sdg-tip { display: none; }
+
+/* Global fixed tooltip (position set by JS) */
+.sdg-global-tip {
+  position: fixed;
+  z-index: 9000;
   background: #1A2340;
   color: #fff;
   border-radius: 12px;
@@ -818,18 +819,18 @@ textarea.f-textarea {
   font-size: 11.5px;
   font-weight: 600;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity .15s ease, transform .15s ease;
-  z-index: 300;
   min-width: 140px;
-  max-width: 210px;
+  max-width: 220px;
   text-align: center;
-  box-shadow: 0 8px 28px rgba(0,0,0,.24);
+  box-shadow: 0 8px 28px rgba(0,0,0,.28);
   line-height: 1.55;
   white-space: normal;
+  animation: tipFadeIn .12s ease;
 }
 
-.sdg-tip::after {
+.sdg-global-tip[hidden] { display: none; }
+
+.sdg-global-tip::after {
   content: '';
   position: absolute;
   bottom: 100%; left: 50%;
@@ -838,14 +839,20 @@ textarea.f-textarea {
   border-bottom-color: #1A2340;
 }
 
-.sdg-btn:hover .sdg-tip,
-.sdg-btn:focus-visible .sdg-tip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+.sdg-global-tip[data-pos="above"]::after {
+  bottom: auto;
+  top: 100%;
+  border-bottom-color: transparent;
+  border-top-color: #1A2340;
+}
+
+@keyframes tipFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (hover: none) {
-  .sdg-tip { display: none; }
+  .sdg-global-tip { display: none !important; }
 }
 
 /* SDG selection banner */
@@ -991,8 +998,7 @@ textarea.f-textarea {
 .ic-section-label {
   font-size: 12px;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .8px;
+  letter-spacing: .4px;
   line-height: 1;
 }
 
@@ -1381,7 +1387,7 @@ textarea.f-textarea {
   max-width: 480px;
 }
 
-.modal-title.help-modal-title::before { content: '❓'; }
+.modal-title.help-modal-title::before { content: ''; }
 
 .help-steps {
   display: flex;
@@ -1745,12 +1751,9 @@ textarea.f-textarea {
   }
 
   .sdg-grid {
-    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-    gap: 7px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
-
-  .sdg-num { font-size: 16px; }
-  .sdg-lbl { font-size: 7.5px; }
 
   .card { padding: 18px; border-radius: var(--r-lg); }
   .card-head-text h2 { font-size: 16px; }
