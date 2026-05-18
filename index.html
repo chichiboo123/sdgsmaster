@@ -244,7 +244,7 @@
         <div class="step3-actions">
           <button type="button" class="btn btn-make" id="btn-make">
             <span class="ms ms-filled">auto_awesome</span>
-            <span data-i18n="btnMakeCard">마스터 카드 만들기</span>
+            <span data-i18n="btnMakeCard">카드 생성</span>
           </button>
           <div class="export-bar-btns" id="export-section">
             <div class="export-btn-wrap" id="export-txt-wrap">
@@ -364,12 +364,48 @@
       <span class="modal-title help-modal-title" data-i18n="helpModalTitle">SDGs 마스터 사용법</span>
       <button type="button" class="modal-close" id="btn-help-close" aria-label="Close"><span class="ms">close</span></button>
     </div>
-    <div class="help-steps">
-      <div class="help-step" data-i18n="helpStep1">📍 1단계: 이름, 발견 장소, 상황을 입력하고 출처가 있으면 붙여넣어요.</div>
-      <div class="help-step" data-i18n="helpStep2">🌍 2단계: 관련 SDG 목표를 선택해요. 첫 번째 클릭이 메인(★), 추가 클릭은 서브(+), 다시 클릭하면 해제돼요.</div>
-      <div class="help-step" data-i18n="helpStep3">✨ 3단계: 마스터 카드 만들기 버튼을 눌러 카드를 완성하고, 이미지를 복사해 패들렛에 Ctrl+V로 붙여넣어요.</div>
+    <!-- Tab buttons -->
+    <div class="help-tabs">
+      <button type="button" class="help-tab active" id="help-tab-guide">📖 사용법</button>
+      <button type="button" class="help-tab" id="help-tab-example">✨ 예시</button>
     </div>
-    <div class="help-cite-tip" data-i18n="helpCiteTip">💡 출처표기 도우미: 상단 인용 아이콘을 클릭하면 책·웹·신문 출처를 쉽게 만들 수 있어요.</div>
+    <!-- Guide tab -->
+    <div class="help-panel" id="help-panel-guide">
+      <div class="help-steps">
+        <div class="help-step" data-i18n="helpStep1">📍 1단계: 이름, 발견 장소, 상황을 입력하고 출처가 있으면 붙여넣어요.</div>
+        <div class="help-step" data-i18n="helpStep2">🌍 2단계: 관련 SDG 목표를 선택해요. 첫 번째 클릭이 메인(★), 추가 클릭은 서브(+), 다시 클릭하면 해제돼요.</div>
+        <div class="help-step" data-i18n="helpStep3">✨ 3단계: 나의 생각을 입력하고 카드 생성 버튼을 눌러 카드를 완성해요. 이미지를 복사해 패들렛에 Ctrl+V로 붙여넣어요.</div>
+      </div>
+      <div class="help-cite-tip" data-i18n="helpCiteTip">💡 출처표기 도우미: 상단 인용 아이콘을 클릭하면 책·웹·신문 출처를 쉽게 만들 수 있어요.</div>
+    </div>
+    <!-- Example tab -->
+    <div class="help-panel" id="help-panel-example" style="display:none">
+      <p class="help-ex-intro">아래는 작성 예시예요. 이런 식으로 채워보세요!</p>
+      <div class="help-ex-card">
+        <div class="help-ex-header">
+          <div class="ic-sdg-icon-fallback" style="background:#3F7E44;width:56px;height:56px;font-size:22px;flex-shrink:0">13</div>
+          <div>
+            <div class="ic-section-label" style="color:#3F7E44;margin-bottom:6px">마스터 SDGs</div>
+            <div class="ic-sdg-pill" style="background:#3F7E44">
+              <span class="ic-sdg-num">★ 13</span> 기후행동
+            </div>
+          </div>
+        </div>
+        <div class="help-ex-section">
+          <div class="ic-section-label" style="color:#3F7E44">발견한 사례</div>
+          <span class="ic-cat-chip" style="background:rgba(63,126,68,.1);color:#3F7E44">일상</span>
+          <p class="ic-situation">오늘 학교 오는 길에 분리수거함이 가득 넘쳐 있는 걸 봤어요. 분리수거를 제대로 하지 않으면 재활용이 안 된다는 걸 배웠는데, 실제로 이런 모습을 보니 안타까웠어요.</p>
+        </div>
+        <div class="help-ex-section" style="border-top:1px solid rgba(0,0,0,.07)">
+          <div class="ic-section-label" style="color:#3F7E44">나의 생각 &amp; 실천</div>
+          <div class="ic-action">우리 반에서 분리수거 당번을 만들어 매일 확인하면 어떨까요? 작은 실천 하나가 지구 온도를 낮추는 기후행동이 될 수 있어요!</div>
+        </div>
+        <div class="help-ex-footer">
+          <span class="ic-logo">SDGs · 지속가능발전목표</span>
+          <span class="ic-meta">by 지구지킴이 · 2025년 5월 18일</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

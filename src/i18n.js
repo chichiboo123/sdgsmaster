@@ -36,7 +36,7 @@ export const TRANSLATIONS = {
     placeholderSituation: '예: 공원에서 쓰레기를 분리배출하는 사람들을 봤어요. 텀블러를 쓰면 일회용 컵이 줄어든다는 것도 알게 됐어요.',
     placeholderAction: '예: 텀블러 하나가 바다 생물을 지키는 일이에요. 우리 반 친구들에게도 꼭 알려주고 싶어요!',
 
-    btnMakeCard: '마스터 카드 만들기',
+    btnMakeCard: '카드 생성',
     helpBtnLabel: '사용법',
     helpModalTitle: 'SDGs 마스터 사용법',
     helpStep1: '🌍 1단계: 관련 SDG 목표를 선택해요. 첫 번째 클릭이 메인(★), 추가 클릭은 서브(+), 다시 클릭하면 해제돼요.',
@@ -172,7 +172,7 @@ export const TRANSLATIONS = {
     placeholderSituation: 'e.g. I saw people sorting recycling in the park. I also learned that using a reusable cup reduces a lot of plastic waste.',
     placeholderAction: 'e.g. I realized that using a tumbler protects sea creatures. I want to tell my classmates too!',
 
-    btnMakeCard: 'Create Master Card',
+    btnMakeCard: 'Create Card',
     helpBtnLabel: 'How to Use',
     helpModalTitle: 'How to Use SDGs Master',
     helpStep1: '🌍 Step 1: Select the most related SDG goal. First click = main (★), extra clicks = sub (+), click again to deselect.',
@@ -308,7 +308,7 @@ export const TRANSLATIONS = {
     placeholderSituation: '例：公園でごみの分別をしている人を見ました。マイボトルを使うと使い捨てカップが減るということも知りました。',
     placeholderAction: '例：マイボトルが海の生き物を守ることにつながると分かりました。クラスのみんなにも伝えたいです！',
 
-    btnMakeCard: 'マスターカードを作る',
+    btnMakeCard: 'カード生成',
     helpBtnLabel: '使い方',
     helpModalTitle: 'SDGsマスターの使い方',
     helpStep1: '🌍 ステップ1: 関連するSDGs目標を選ぼう。1回目がメイン(★)、追加はサブ(+)、再クリックで解除。',
@@ -444,7 +444,7 @@ export const TRANSLATIONS = {
     placeholderSituation: 'cth: Saya melihat orang-orang memilah sampah di taman. Saya juga tahu bahwa memakai tumbler bisa mengurangi sampah plastik.',
     placeholderAction: 'cth: Saya sadar bahwa memakai tumbler bisa melindungi makhluk laut. Saya ingin memberitahu teman-teman sekelas saya!',
 
-    btnMakeCard: 'Buat Kartu Master',
+    btnMakeCard: 'Buat Kartu',
     helpBtnLabel: 'Cara Pakai',
     helpModalTitle: 'Cara Menggunakan SDGs Master',
     helpStep1: '🌍 Langkah 1: Pilih tujuan SDGs yang relevan. Klik pertama = utama (★), klik tambahan = sub (+), klik lagi untuk batal.',

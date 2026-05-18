@@ -571,13 +571,26 @@ function toggleFullscreen() {
     btn.style.top = '12px';
     btn.style.right = '12px';
     btn.style.zIndex = '600';
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+    // iOS Safari: request native fullscreen when available
+    if (panel.requestFullscreen) {
+      panel.requestFullscreen().catch(() => {});
+    } else if (panel.webkitRequestFullscreen) {
+      panel.webkitRequestFullscreen();
+    }
   } else {
     btn.style.position = '';
     btn.style.top = '';
     btn.style.right = '';
     btn.style.zIndex = '';
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
+    if (document.exitFullscreen && document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
+      document.webkitExitFullscreen();
+    }
   }
 }
 
@@ -685,10 +698,19 @@ function setPB(pbId, chipId, done, active) {
 ============================================= */
 function openHelpModal() {
   document.getElementById('help-modal').classList.add('show');
+  switchHelpTab('guide');
 }
 
 function closeHelpModal() {
   document.getElementById('help-modal').classList.remove('show');
+}
+
+function switchHelpTab(tab) {
+  ['guide', 'example'].forEach(id => {
+    document.getElementById(`help-tab-${id}`)?.classList.toggle('active', id === tab);
+    const panel = document.getElementById(`help-panel-${id}`);
+    if (panel) panel.style.display = id === tab ? '' : 'none';
+  });
 }
 
 /* =============================================
@@ -927,6 +949,10 @@ function bindEvents() {
   document.getElementById('help-modal')?.addEventListener('click', e => {
     if (e.target === document.getElementById('help-modal')) closeHelpModal();
   });
+
+  // Help tabs
+  document.getElementById('help-tab-guide')?.addEventListener('click', () => switchHelpTab('guide'));
+  document.getElementById('help-tab-example')?.addEventListener('click', () => switchHelpTab('example'));
 
   // Citation modal
   document.getElementById('btn-cite')?.addEventListener('click', openCiteModal);
