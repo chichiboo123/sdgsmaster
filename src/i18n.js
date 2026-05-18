@@ -23,7 +23,7 @@ export const TRANSLATIONS = {
     labelSource: '📎 출처',
     optLabel: '선택',
     placeholderSource: '출처표기 도우미에서 만든 출처를 붙여넣으세요',
-    labelSDG: '🌍 가장 관련 깊은 SDG 목표는?',
+    labelSDG: '🎯 당신이 마스터할 SDGs 카드를 선택하세요!',
     labelAction: '💡 나의 생각 & 우리가 할 수 있는 실천',
 
     catDaily: '일상',
@@ -159,7 +159,7 @@ export const TRANSLATIONS = {
     labelSource: '📎 Source',
     optLabel: 'Optional',
     placeholderSource: 'Paste your citation from the Citation Helper here',
-    labelSDG: '🌍 Which SDG Goal is most related?',
+    labelSDG: '🎯 Choose the SDGs card you will master!',
     labelAction: '💡 My Thoughts & Actions We Can Take',
 
     catDaily: 'Daily Life',
@@ -295,7 +295,7 @@ export const TRANSLATIONS = {
     labelSource: '📎 出典',
     optLabel: '任意',
     placeholderSource: '引用文献ツールで作った出典を貼り付けてください',
-    labelSDG: '🌍 一番関係の深いSDGsの目標は？',
+    labelSDG: '🎯 マスターするSDGsカードを選ぼう！',
     labelAction: '💡 わたしの考えと、できることは？',
 
     catDaily: '日常',
@@ -431,7 +431,7 @@ export const TRANSLATIONS = {
     labelSource: '📎 Sumber',
     optLabel: 'Opsional',
     placeholderSource: 'Tempel kutipan dari Alat Kutipan di sini',
-    labelSDG: '🌍 Tujuan SDGs mana yang paling berkaitan?',
+    labelSDG: '🎯 Pilih kartu SDGs yang akan kamu kuasai!',
     labelAction: '💡 Pikiran & Tindakan yang Bisa Kita Lakukan',
 
     catDaily: 'Kehidupan Sehari-hari',
