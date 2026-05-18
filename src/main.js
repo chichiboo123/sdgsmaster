@@ -40,14 +40,18 @@ function buildSDGGrid() {
   const grid = document.getElementById('sdg-grid');
   grid.innerHTML = SDGS.map(s => {
     const [t1, t2] = s.tips[lang].split('\n');
+    const aria = `${s.n}. ${esc(s.labels[lang])}`;
     return `
-      <button class="sdg-btn" id="sdg${s.n}" style="background:${s.col}"
-        onclick="window._pickSDG(${s.n})">
+      <button type="button" class="sdg-btn" id="sdg${s.n}" style="background:${s.col}"
+        data-sdg="${s.n}" aria-label="${aria}" aria-pressed="false">
         <span class="sdg-num">${s.n}</span>
-        <span class="sdg-lbl">${s.labels[lang]}</span>
-        <div class="sdg-tip"><strong>${t1}</strong><br/>${t2}</div>
+        <span class="sdg-lbl">${esc(s.labels[lang])}</span>
+        <div class="sdg-tip" role="tooltip"><strong>${esc(t1)}</strong><br/>${esc(t2)}</div>
       </button>`;
   }).join('');
+  grid.querySelectorAll('.sdg-btn').forEach(btn => {
+    btn.addEventListener('click', () => pickSDG(Number(btn.dataset.sdg)));
+  });
 }
 
 /* =============================================
@@ -55,6 +59,7 @@ function buildSDGGrid() {
 ============================================= */
 function switchLang(lang) {
   setLang(lang);
+  document.documentElement.lang = lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : lang === 'id' ? 'id' : 'en';
 
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === lang);
@@ -90,7 +95,9 @@ function getSelCatKey() {
 function pickCat(key) {
   selCat = key;
   document.querySelectorAll('.cat-btn').forEach(b => {
-    b.classList.toggle('on', b.dataset.key === key);
+    const on = b.dataset.key === key;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
   });
   const otherWrap = document.getElementById('cat-other-wrap');
   if (key === 'other') {
@@ -115,16 +122,20 @@ function getCatDisplay() {
    SDG SELECTION
 ============================================= */
 function pickSDG(n) {
-  document.querySelectorAll('.sdg-btn').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.sdg-btn').forEach(b => {
+    b.classList.remove('on');
+    b.setAttribute('aria-pressed', 'false');
+  });
   const btn = document.getElementById('sdg' + n);
-  if (btn) btn.classList.add('on');
+  if (btn) {
+    btn.classList.add('on');
+    btn.setAttribute('aria-pressed', 'true');
+  }
   selSDG = SDGS.find(s => s.n === n);
   updateSDGBanner(selSDG);
   hideErr('e-sdg');
   refreshProgress();
 }
-
-window._pickSDG = pickSDG;
 
 function updateSDGBanner(sdg) {
   const banner = document.getElementById('sdg-banner');
@@ -265,23 +276,41 @@ async function copyCard() {
 ============================================= */
 function loadPadletAuto() {
   const saved = localStorage.getItem(LS_PADLET_KEY);
-  const url   = saved || DEFAULT_PADLET_URL;
+  const url   = sanitizeUrl(saved) || DEFAULT_PADLET_URL;
   embedPadlet(url);
 }
 
+function sanitizeUrl(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  try {
+    const u = new URL(s);
+    if (u.protocol === 'http:' || u.protocol === 'https:') return u.toString();
+  } catch { /* not a valid URL */ }
+  return '';
+}
+
 function embedPadlet(rawUrl) {
-  const src = rawUrl.trim();
-  document.getElementById('padlet-body').innerHTML =
-    `<iframe src="${esc(src)}"
+  const src = sanitizeUrl(rawUrl) || DEFAULT_PADLET_URL;
+  const body = document.getElementById('padlet-body');
+  body.innerHTML = `
+    <div class="padlet-loading" id="padlet-loading">
+      <div class="padlet-spinner" aria-hidden="true"></div>
+    </div>
+    <iframe src="${esc(src)}"
       allow="camera;microphone;geolocation"
       title="Padlet"
-      allowfullscreen>
-    </iframe>`;
+      loading="lazy"
+      allowfullscreen></iframe>`;
+  const iframe = body.querySelector('iframe');
+  const loading = body.querySelector('#padlet-loading');
+  iframe.addEventListener('load', () => loading?.remove(), { once: true });
+  setTimeout(() => loading?.remove(), 8000);
 }
 
 function openPadletNewTab() {
   const saved = localStorage.getItem(LS_PADLET_KEY);
-  const url   = saved || DEFAULT_PADLET_URL;
+  const url   = sanitizeUrl(saved) || DEFAULT_PADLET_URL;
   window.open(url, '_blank', 'noopener');
 }
 
@@ -350,8 +379,12 @@ function showAdminSettings() {
 }
 
 function saveAdminPadlet() {
-  const url = document.getElementById('admin-padlet-input').value.trim();
-  if (!url) return;
+  const raw = document.getElementById('admin-padlet-input').value.trim();
+  const url = sanitizeUrl(raw);
+  if (!url) {
+    showToast('⚠️', 'https://padlet.com/... 형식의 URL을 입력해 주세요.');
+    return;
+  }
   localStorage.setItem(LS_PADLET_KEY, url);
   embedPadlet(url);
   closeAdminModal();

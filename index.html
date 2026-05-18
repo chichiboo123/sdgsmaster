@@ -2,9 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <title>SDGs 마스터</title>
-  <meta name="description" content="초등학생을 위한 집단지성형 SDGs 큐레이션 앱" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#5B8DEF" />
+  <title>SDGs 마스터 — 우리가 만드는 지속가능한 세상</title>
+  <meta name="description" content="초등학생을 위한 집단지성형 SDGs 큐레이션 웹앱. 사례 발견 → SDGs 연결 → 인사이트 카드 큐레이션." />
+  <meta property="og:title" content="SDGs 마스터" />
+  <meta property="og:description" content="초등학생을 위한 집단지성형 SDGs 큐레이션 웹앱" />
+  <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,10 +51,10 @@
 
       <!-- Language switcher -->
       <div class="lang-sw" role="group" aria-label="Language">
-        <button class="lang-btn active" data-lang="ko">한국어</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="ja">日本語</button>
-        <button class="lang-btn" data-lang="id">ID</button>
+        <button type="button" class="lang-btn active" data-lang="ko" aria-label="한국어">한국어</button>
+        <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button type="button" class="lang-btn" data-lang="ja" aria-label="日本語">日本語</button>
+        <button type="button" class="lang-btn" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
       </div>
     </div>
   </header>
@@ -106,21 +110,21 @@
             <span data-i18n="labelWhere">📍 어디서 발견했나요?</span>
             <span class="req">*</span>
           </div>
-          <div class="cat-grid">
-            <button class="cat-btn" data-key="daily">
-              <span class="ci">🏠</span>
+          <div class="cat-grid" role="radiogroup" aria-label="Where">
+            <button type="button" class="cat-btn" data-key="daily" role="radio" aria-checked="false">
+              <span class="ci" aria-hidden="true">🏠</span>
               <span data-i18n="catDaily">일상</span>
             </button>
-            <button class="cat-btn" data-key="book">
-              <span class="ci">📚</span>
+            <button type="button" class="cat-btn" data-key="book" role="radio" aria-checked="false">
+              <span class="ci" aria-hidden="true">📚</span>
               <span data-i18n="catBook">교과서나 책</span>
             </button>
-            <button class="cat-btn" data-key="internet">
-              <span class="ci">🌐</span>
+            <button type="button" class="cat-btn" data-key="internet" role="radio" aria-checked="false">
+              <span class="ci" aria-hidden="true">🌐</span>
               <span data-i18n="catInternet">인터넷</span>
             </button>
-            <button class="cat-btn" data-key="other">
-              <span class="ci">✏️</span>
+            <button type="button" class="cat-btn" data-key="other" role="radio" aria-checked="false">
+              <span class="ci" aria-hidden="true">✏️</span>
               <span data-i18n="catOther">기타</span>
             </button>
           </div>
@@ -203,7 +207,7 @@
           </div>
         </div>
 
-        <button class="btn btn-make" id="btn-make">
+        <button type="button" class="btn btn-make" id="btn-make">
           <span data-i18n="btnMakeCard">✨  인사이트 카드 만들기</span>
         </button>
 
@@ -217,7 +221,7 @@
           </div>
         </div>
 
-        <button class="btn btn-copy" id="btn-copy" disabled>
+        <button type="button" class="btn btn-copy" id="btn-copy" disabled>
           <span data-i18n="btnCopy">📋  카드 이미지를 클립보드에 복사</span>
         </button>
 
@@ -235,10 +239,10 @@
       <div class="padlet-bar">
         <span class="padlet-bar-title" data-i18n="padletTitle">우리 반 전시 공간</span>
         <div class="padlet-bar-actions">
-          <button class="padlet-icon-btn" id="btn-padlet-newtab">
+          <button type="button" class="padlet-icon-btn" id="btn-padlet-newtab" aria-label="Open Padlet in new tab">
             ↗ <span data-i18n="padletOpenNew">새 탭에서 열기</span>
           </button>
-          <button class="padlet-icon-btn" id="btn-fullscreen">
+          <button type="button" class="padlet-icon-btn" id="btn-fullscreen" aria-label="Toggle fullscreen">
             ⤢ <span data-i18n="padletFullscreen">전체 화면</span>
           </button>
         </div>
@@ -272,10 +276,8 @@
 
       <!-- Padlet iframe / placeholder -->
       <div class="padlet-body" id="padlet-body">
-        <div class="padlet-empty">
-          <span class="padlet-empty-icon">🗺️</span>
-          <p class="padlet-empty-title" data-i18n="padletEmptyTitle">패들렛 전시 공간</p>
-          <p data-i18n="padletEmptyBody">카드를 복사한 뒤<br /><strong>Ctrl+V</strong>를 누르면 바로 전시! 🎉</p>
+        <div class="padlet-loading" id="padlet-loading" aria-hidden="true">
+          <div class="padlet-spinner"></div>
         </div>
       </div>
 
@@ -298,7 +300,7 @@
   <div class="modal-box">
     <div class="modal-head">
       <span class="modal-title" data-i18n="adminTitle">관리자 설정</span>
-      <button class="modal-close" id="btn-admin-close" aria-label="Close">✕</button>
+      <button type="button" class="modal-close" id="btn-admin-close" aria-label="Close">✕</button>
     </div>
 
     <!-- Password section -->
@@ -312,7 +314,7 @@
           <input type="password" id="admin-pw-input" class="f-input"
             data-i18n-placeholder="adminPwPlaceholder"
             placeholder="비밀번호" autocomplete="off" />
-          <button class="modal-submit" id="admin-pw-btn" data-i18n="adminPwBtn">확인</button>
+          <button type="button" class="modal-submit" id="admin-pw-btn" data-i18n="adminPwBtn">확인</button>
         </div>
         <div class="pw-err" id="pw-err" data-i18n="adminPwError">비밀번호가 맞지 않습니다.</div>
       </div>
@@ -327,8 +329,8 @@
           placeholder="https://padlet.com/..." />
       </div>
       <div class="modal-actions">
-        <button class="modal-btn-save" id="admin-save-btn" data-i18n="adminSave">저장</button>
-        <button class="modal-btn-reset" id="admin-reset-btn" data-i18n="adminReset">기본값으로 초기화</button>
+        <button type="button" class="modal-btn-save" id="admin-save-btn" data-i18n="adminSave">저장</button>
+        <button type="button" class="modal-btn-reset" id="admin-reset-btn" data-i18n="adminReset">기본값으로 초기화</button>
       </div>
     </div>
 

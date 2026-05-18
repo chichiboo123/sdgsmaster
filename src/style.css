@@ -343,6 +343,31 @@ body {
   display: block;
 }
 
+/* Padlet iframe loading spinner */
+.padlet-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-alt);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.padlet-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .padlet-empty {
   text-align: center;
   padding: 32px 24px;
@@ -649,9 +674,14 @@ textarea.f-textarea {
   border-top-color: #1A2340;
 }
 
-.sdg-btn:hover .sdg-tip {
+.sdg-btn:hover .sdg-tip,
+.sdg-btn:focus-visible .sdg-tip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+@media (hover: none) {
+  .sdg-tip { display: none; }
 }
 
 /* SDG selection banner */
