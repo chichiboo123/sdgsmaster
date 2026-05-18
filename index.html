@@ -119,20 +119,6 @@
           <div class="err-msg" id="e-sdg" data-i18n="errSDG">SDG 목표를 선택해 주세요.</div>
         </div>
 
-        <div class="divider"></div>
-
-        <!-- Action / thoughts -->
-        <div class="field">
-          <div class="field-label">
-            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
-            <span class="req">*</span>
-          </div>
-          <textarea id="inp-action" class="f-textarea"
-            data-i18n-placeholder="placeholderAction"
-            placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
-            maxlength="300" rows="4"></textarea>
-          <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
-        </div>
       </div>
 
       <!-- ===== STEP 2 ===== -->
@@ -154,7 +140,7 @@
           <input type="text" id="inp-name" class="f-input"
             data-i18n-placeholder="placeholderName"
             placeholder="예: 김지우, 환경지킴이123"
-            maxlength="20" autocomplete="off" />
+            maxlength="20" autocomplete="new-password" />
           <div class="err-msg" id="e-name" data-i18n="errName">이름을 입력해 주세요.</div>
         </div>
 
@@ -225,16 +211,29 @@
         <div class="card-head">
           <div class="card-icon ci-pink">✨</div>
           <div class="card-head-text">
-            <h2 data-i18n="step3Title">3단계 · 큐레이션 (Curation)</h2>
-            <p data-i18n="step3Desc">인사이트 카드를 만들고 패들렛에 전시하세요!</p>
+            <h2 data-i18n="step3Title">3단계 · 마스터 카드 (Master Card)</h2>
+            <p data-i18n="step3Desc">나의 생각을 정리하고 마스터 카드를 완성하세요!</p>
           </div>
         </div>
 
-        <button type="button" class="btn btn-make" id="btn-make">
-          <span data-i18n="btnMakeCard">✨  인사이트 카드 만들기</span>
-        </button>
+        <!-- Action / thoughts (moved from step 1) -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
+            <span class="req">*</span>
+          </div>
+          <textarea id="inp-action" class="f-textarea"
+            data-i18n-placeholder="placeholderAction"
+            placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
+            maxlength="300" rows="4"></textarea>
+          <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
+        </div>
 
-        <div style="height:12px"></div>
+        <div class="make-btn-row">
+          <button type="button" class="btn btn-make" id="btn-make">
+            <span data-i18n="btnMakeCard">✨ 마스터 카드 만들기</span>
+          </button>
+        </div>
 
         <!-- Card preview -->
         <div class="card-preview-wrap" id="cpw">
@@ -247,30 +246,32 @@
         <!-- Export section -->
         <div class="export-section" id="export-section">
           <div class="export-section-title" data-i18n="exportTitle">📤 내보내기</div>
-          <div class="export-row">
-            <span class="export-type-label" data-i18n="exportTxtLabel">📝 TXT</span>
-            <div class="export-btns">
-              <button type="button" class="btn-export" id="btn-txt-copy" disabled>
-                <span class="export-btn-icon">📋</span>
-                <span data-i18n="btnClipboard">클립보드 복사</span>
+          <div class="export-btns-row">
+            <div class="export-btn-wrap" id="export-txt-wrap">
+              <button type="button" class="btn-export-main" id="btn-txt" disabled>
+                <span class="export-btn-icon">📝</span> TXT
               </button>
-              <button type="button" class="btn-export" id="btn-txt-dl" disabled>
-                <span class="export-btn-icon">💾</span>
-                <span data-i18n="btnDownload">다운로드</span>
-              </button>
+              <div class="export-dropdown" id="export-txt-dd">
+                <button type="button" class="export-dd-item" id="btn-txt-copy">
+                  <span>📋</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                </button>
+                <button type="button" class="export-dd-item" id="btn-txt-dl">
+                  <span>💾</span><span data-i18n="btnDownload">다운로드</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="export-row">
-            <span class="export-type-label" data-i18n="exportImgLabel">🖼️ 이미지</span>
-            <div class="export-btns">
-              <button type="button" class="btn-export" id="btn-img-copy" disabled>
-                <span class="export-btn-icon">📋</span>
-                <span data-i18n="btnClipboard">클립보드 복사</span>
+            <div class="export-btn-wrap" id="export-img-wrap">
+              <button type="button" class="btn-export-main" id="btn-img" disabled>
+                <span class="export-btn-icon">🖼️</span> JPG
               </button>
-              <button type="button" class="btn-export" id="btn-img-dl" disabled>
-                <span class="export-btn-icon">💾</span>
-                <span data-i18n="btnDownload">다운로드</span>
-              </button>
+              <div class="export-dropdown" id="export-img-dd">
+                <button type="button" class="export-dd-item" id="btn-img-copy">
+                  <span>📋</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                </button>
+                <button type="button" class="export-dd-item" id="btn-img-dl">
+                  <span>💾</span><span data-i18n="btnDownload">다운로드</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
