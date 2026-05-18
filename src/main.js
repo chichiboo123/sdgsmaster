@@ -85,11 +85,8 @@ function switchLang(lang) {
   setLang(lang);
   document.documentElement.lang = lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : lang === 'id' ? 'id' : 'en';
 
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    const active = b.dataset.lang === lang;
-    b.classList.toggle('active', active);
-    b.setAttribute('aria-checked', active ? 'true' : 'false');
-  });
+  const langSelect = document.getElementById('lang-select');
+  if (langSelect) langSelect.value = lang;
 
   applyI18n();
   buildSDGGrid();
@@ -232,6 +229,8 @@ function makeCard() {
 
   if (selCat === 'other') selCatCustom = v('cat-other-input');
 
+  const sourceText = v('inp-source');
+
   const today = new Date().toLocaleDateString(
     getLang() === 'ko' ? 'ko-KR' :
     getLang() === 'ja' ? 'ja-JP' :
@@ -284,6 +283,7 @@ function makeCard() {
       </div>
 
       <p class="ic-situation">"${esc(sit)}"</p>
+      ${sourceText ? `<p class="ic-source">📎 ${esc(sourceText)}</p>` : ''}
       <p class="ic-action-label">${esc(actionLbl)}</p>
       <div class="ic-action">${esc(action)}</div>
 
@@ -321,8 +321,13 @@ function buildTxtContent() {
     ? `\n${lang === 'ko' ? '서브 목표' : lang === 'ja' ? 'サブ目標' : lang === 'id' ? 'Tujuan Tambahan' : 'Sub Goals'}: ` +
       selSubSDGs.map(s => `SDG ${s.n} ${s.labels[lang]}`).join(', ')
     : '';
+  const sourceVal = v('inp-source');
+  const sourceLine = sourceVal
+    ? `${lang === 'ko' ? '출처' : lang === 'ja' ? '出典' : lang === 'id' ? 'Sumber' : 'Source'}: ${sourceVal}`
+    : '';
+
   const lines = [
-    `[SDGs Master] Insight Card`,
+    `[SDGs Master] Master Card`,
     `${'='.repeat(32)}`,
     `${lang === 'ko' ? '이름' : lang === 'ja' ? '名前' : lang === 'id' ? 'Nama' : 'Name'}: ${name}`,
     `${lang === 'ko' ? '날짜' : lang === 'ja' ? '日付' : lang === 'id' ? 'Tanggal' : 'Date'}: ${today}`,
@@ -331,6 +336,7 @@ function buildTxtContent() {
     ``,
     `[${lang === 'ko' ? '상황' : lang === 'ja' ? '状況' : lang === 'id' ? 'Situasi' : 'Situation'}]`,
     sit,
+    ...(sourceLine ? [``, sourceLine] : []),
     ``,
     `[${lang === 'ko' ? '나의 생각 & 실천' : lang === 'ja' ? 'わたしの考え' : lang === 'id' ? 'Pikiran & Tindakan' : 'Thoughts & Actions'}]`,
     action,
@@ -596,6 +602,17 @@ function setPB(pbId, chipId, done, active) {
 }
 
 /* =============================================
+   HELP MODAL
+============================================= */
+function openHelpModal() {
+  document.getElementById('help-modal').classList.add('show');
+}
+
+function closeHelpModal() {
+  document.getElementById('help-modal').classList.remove('show');
+}
+
+/* =============================================
    CITATION MODAL
 ============================================= */
 function openCiteModal() {
@@ -748,10 +765,8 @@ async function copyCite() {
    BIND EVENTS
 ============================================= */
 function bindEvents() {
-  // Lang buttons
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => switchLang(btn.dataset.lang));
-  });
+  // Lang dropdown
+  document.getElementById('lang-select')?.addEventListener('change', e => switchLang(e.target.value));
 
   // Category buttons
   document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -807,7 +822,15 @@ function bindEvents() {
       if (isFullscreen) toggleFullscreen();
       closeAdminModal();
       closeCiteModal();
+      closeHelpModal();
     }
+  });
+
+  // Help modal
+  document.getElementById('btn-help')?.addEventListener('click', openHelpModal);
+  document.getElementById('btn-help-close')?.addEventListener('click', closeHelpModal);
+  document.getElementById('help-modal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('help-modal')) closeHelpModal();
   });
 
   // Citation modal
