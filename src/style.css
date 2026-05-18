@@ -885,7 +885,7 @@ textarea.f-textarea {
 }
 
 .card-workspace.ready .card-preview-wrap {
-  padding: 14px;
+  padding: 0;
   border-bottom: 1.5px solid var(--border);
 }
 
@@ -928,7 +928,7 @@ textarea.f-textarea {
 /* THE INSIGHT CARD */
 .insight-card {
   padding: 24px;
-  border-radius: var(--r-xl);
+  border-radius: 0;
   position: relative;
   overflow: hidden;
   font-family: var(--font);
@@ -947,12 +947,22 @@ textarea.f-textarea {
   margin-bottom: 13px;
 }
 
-/* Card goal wrap (main + sub pills) */
+/* Card goal wrap (main + sub pills + category) */
 .ic-top-left {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  max-width: 62%;
+  max-width: 68%;
+}
+
+/* Official SDG goal icon image */
+.ic-sdg-icon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 6px;
+  align-self: flex-start;
 }
 
 .ic-sub-goals {
@@ -1032,6 +1042,7 @@ textarea.f-textarea {
   background: rgba(255,255,255,.65);
   border-radius: var(--r-sm);
   padding: 9px 13px;
+  white-space: pre-line;
 }
 
 .ic-footer {

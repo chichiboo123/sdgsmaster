@@ -255,6 +255,8 @@ function makeCard() {
     subPillsHtml += `</div>`;
   }
 
+  const sdgIconUrl = `https://open-sdg.github.io/sdg-translations/assets/img/goals/en/${selMainSDG.n}.png`;
+
   const cpw = document.getElementById('cpw');
   cpw.classList.add('has-card');
   cpw.innerHTML = `
@@ -263,11 +265,11 @@ function makeCard() {
       border-left: 5px solid ${selMainSDG.col};
     ">
       <div class="ic-deco" style="
-        background:${selMainSDG.col}; opacity:.12;
-        top:-36px; right:-36px; width:130px; height:130px;"></div>
+        background:${selMainSDG.col}; opacity:.10;
+        top:-36px; right:-36px; width:140px; height:140px;"></div>
       <div class="ic-deco" style="
-        background:${selMainSDG.col}; opacity:.08;
-        bottom:-24px; left:-24px; width:90px; height:90px;"></div>
+        background:${selMainSDG.col}; opacity:.07;
+        bottom:-28px; left:-28px; width:100px; height:100px;"></div>
 
       <div class="ic-top">
         <div class="ic-top-left">
@@ -276,16 +278,19 @@ function makeCard() {
             ${esc(sdgLabel)}
           </div>
           ${subPillsHtml}
+          <span class="ic-cat" style="
+            background:${hexAlpha(selMainSDG.col,.12)};
+            color:${selMainSDG.col}">${esc(catLabel)}</span>
         </div>
-        <span class="ic-cat" style="
-          background:${hexAlpha(selMainSDG.col,.12)};
-          color:${selMainSDG.col}">${esc(catLabel)}</span>
+        <img class="ic-sdg-icon" src="${sdgIconUrl}"
+          alt="SDG ${selMainSDG.n}" crossorigin="anonymous"
+          onerror="this.style.display='none'">
       </div>
 
-      <p class="ic-situation">"${esc(sit)}"</p>
+      <p class="ic-situation">"${toHtml(sit)}"</p>
       ${sourceText ? `<p class="ic-source">📎 ${esc(sourceText)}</p>` : ''}
       <p class="ic-action-label">${esc(actionLbl)}</p>
-      <div class="ic-action">${esc(action)}</div>
+      <div class="ic-action">${toHtml(action)}</div>
 
       <div class="ic-footer">
         <span class="ic-logo">${esc(brand)}</span>
@@ -893,6 +898,10 @@ function esc(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function toHtml(s) {
+  return esc(s).replace(/\n/g, '<br>');
 }
 
 function hexAlpha(hex, a) {
