@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>SDGs 마스터</title>
+  <meta name="description" content="초등학생을 위한 집단지성형 SDGs 큐레이션 앱" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-left">
+      <span class="brand-badge">SDGs</span>
+      <span class="brand-title" data-i18n="appName">SDGs 마스터</span>
+      <span class="admin-badge" id="admin-badge" data-i18n="adminBadge">관리자</span>
+    </div>
+
+    <div class="header-right">
+      <!-- Step progress chips -->
+      <nav class="step-chips">
+        <span class="step-chip active" id="hchip1">
+          <span class="step-chip-dot"></span>
+          <span data-i18n="step1Label">발견</span>
+        </span>
+        <span class="step-arrow">›</span>
+        <span class="step-chip" id="hchip2">
+          <span class="step-chip-dot"></span>
+          <span data-i18n="step2Label">연결</span>
+        </span>
+        <span class="step-arrow">›</span>
+        <span class="step-chip" id="hchip3">
+          <span class="step-chip-dot"></span>
+          <span data-i18n="step3Label">큐레이션</span>
+        </span>
+      </nav>
+
+      <!-- Language switcher -->
+      <div class="lang-sw" role="group" aria-label="Language">
+        <button class="lang-btn active" data-lang="ko">한국어</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ja">日本語</button>
+        <button class="lang-btn" data-lang="id">ID</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== TWO-COLUMN SPLIT ===== -->
+  <div class="split">
+
+    <!-- ===== LEFT PANEL — INPUT ===== -->
+    <div class="panel-left">
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="pb-step active" id="pb1">
+          <span class="pb-num">1</span>
+          <span data-i18n="step1Label">사례 발견</span>
+        </div>
+        <div class="pb-step" id="pb2">
+          <span class="pb-num">2</span>
+          <span data-i18n="step2Label">SDGs 연결</span>
+        </div>
+        <div class="pb-step" id="pb3">
+          <span class="pb-num">3</span>
+          <span data-i18n="step3Label">큐레이션</span>
+        </div>
+      </div>
+
+      <!-- ===== STEP 1 ===== -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon ci-blue">🔍</div>
+          <div class="card-head-text">
+            <h2 data-i18n="step1Title">1단계 · 사례 발견 (Discover)</h2>
+            <p data-i18n="step1Desc">일상 속에서 SDGs와 관련된 사례를 찾아보세요</p>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelName">이름 (닉네임)</span>
+            <span class="req">*</span>
+          </div>
+          <input type="text" id="inp-name" class="f-input"
+            data-i18n-placeholder="placeholderName"
+            placeholder="예: 김지우, 환경지킴이123"
+            maxlength="20" autocomplete="nickname" />
+          <div class="err-msg" id="e-name" data-i18n="errName">이름을 입력해 주세요.</div>
+        </div>
+
+        <!-- Where found — 4 categories -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelWhere">📍 어디서 발견했나요?</span>
+            <span class="req">*</span>
+          </div>
+          <div class="cat-grid">
+            <button class="cat-btn" data-key="daily">
+              <span class="ci">🏠</span>
+              <span data-i18n="catDaily">일상</span>
+            </button>
+            <button class="cat-btn" data-key="book">
+              <span class="ci">📚</span>
+              <span data-i18n="catBook">교과서나 책</span>
+            </button>
+            <button class="cat-btn" data-key="internet">
+              <span class="ci">🌐</span>
+              <span data-i18n="catInternet">인터넷</span>
+            </button>
+            <button class="cat-btn" data-key="other">
+              <span class="ci">✏️</span>
+              <span data-i18n="catOther">기타</span>
+            </button>
+          </div>
+          <div class="err-msg" id="e-cat" data-i18n="errCat">발견한 장소를 선택해 주세요.</div>
+
+          <!-- "기타" custom text input -->
+          <div class="cat-other-input-wrap" id="cat-other-wrap">
+            <input type="text" id="cat-other-input" class="f-input"
+              data-i18n-placeholder="catOtherPlaceholder"
+              placeholder="발견한 곳을 직접 입력해 주세요"
+              maxlength="40" />
+            <div class="err-msg" id="e-cat-other" data-i18n="errCatOther">발견한 곳을 직접 입력해 주세요.</div>
+          </div>
+        </div>
+
+        <!-- Situation -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelSituation">💬 어떤 상황인가요?</span>
+            <span class="req">*</span>
+          </div>
+          <textarea id="inp-sit" class="f-textarea"
+            data-i18n-placeholder="placeholderSituation"
+            placeholder="예: 공원에서 쓰레기를 분리배출하는 사람들을 봤어요."
+            maxlength="300" rows="4"></textarea>
+          <div class="err-msg" id="e-sit" data-i18n="errSituation">상황을 입력해 주세요.</div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2 ===== -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon ci-green">🔗</div>
+          <div class="card-head-text">
+            <h2 data-i18n="step2Title">2단계 · SDGs와 연결 (Connect)</h2>
+            <p data-i18n="step2Desc">아이콘에 마우스를 올려 설명을 보고, 관련 목표 1개를 선택하세요</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelSDG">🌍 가장 관련 깊은 SDG 목표는?</span>
+            <span class="req">*</span>
+          </div>
+
+          <!-- SDG selected banner -->
+          <div class="sdg-banner" id="sdg-banner">
+            <span class="sdg-banner-dot" id="sdg-banner-dot"></span>
+            <span id="sdg-banner-text"></span>
+          </div>
+
+          <!-- SDG grid (built by JS) -->
+          <div class="sdg-grid" id="sdg-grid"></div>
+          <div class="err-msg" id="e-sdg" data-i18n="errSDG">SDG 목표를 선택해 주세요.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Action / thoughts -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
+            <span class="req">*</span>
+          </div>
+          <textarea id="inp-action" class="f-textarea"
+            data-i18n-placeholder="placeholderAction"
+            placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
+            maxlength="300" rows="4"></textarea>
+          <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3 ===== -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon ci-pink">✨</div>
+          <div class="card-head-text">
+            <h2 data-i18n="step3Title">3단계 · 큐레이션 (Curation)</h2>
+            <p data-i18n="step3Desc">인사이트 카드를 만들고 패들렛에 전시하세요!</p>
+          </div>
+        </div>
+
+        <button class="btn btn-make" id="btn-make">
+          <span data-i18n="btnMakeCard">✨  인사이트 카드 만들기</span>
+        </button>
+
+        <div style="height:12px"></div>
+
+        <!-- Card preview -->
+        <div class="card-preview-wrap" id="cpw">
+          <div class="card-empty">
+            <span class="card-empty-icon">🃏</span>
+            <p data-i18n="cardEmptyHint">위 버튼을 눌러 나만의 카드를 만들어 보세요!</p>
+          </div>
+        </div>
+
+        <button class="btn btn-copy" id="btn-copy" disabled>
+          <span data-i18n="btnCopy">📋  카드 이미지를 클립보드에 복사</span>
+        </button>
+
+        <p class="copy-hint">
+          <span data-i18n="copyHint">복사 후 패들렛에서 <strong>Ctrl+V</strong>로 붙여넣기!</span>
+        </p>
+      </div>
+
+    </div><!-- /panel-left -->
+
+    <!-- ===== RIGHT PANEL — PADLET ===== -->
+    <div class="panel-right" id="panel-right">
+
+      <!-- Padlet top bar -->
+      <div class="padlet-bar">
+        <span class="padlet-bar-title" data-i18n="padletTitle">우리 반 전시 공간</span>
+        <div class="padlet-bar-actions">
+          <button class="padlet-icon-btn" id="btn-padlet-newtab">
+            ↗ <span data-i18n="padletOpenNew">새 탭에서 열기</span>
+          </button>
+          <button class="padlet-icon-btn" id="btn-fullscreen">
+            ⤢ <span data-i18n="padletFullscreen">전체 화면</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Paste guide steps -->
+      <div class="paste-guide">
+        <span class="paste-guide-title" data-i18n="padletStepTitle">이렇게 전시해요</span>
+        <div class="paste-steps">
+          <div class="paste-step">
+            <span class="paste-step-num">1</span>
+            <span data-i18n="padletStep1">카드 만들기 → 복사</span>
+          </div>
+          <span class="paste-step-arrow">›</span>
+          <div class="paste-step">
+            <span class="paste-step-num">2</span>
+            <span data-i18n="padletStep2">패들렛 화면 클릭</span>
+          </div>
+          <span class="paste-step-arrow">›</span>
+          <div class="paste-step">
+            <span class="paste-step-num">3</span>
+            <span data-i18n="padletStep3">Ctrl+V</span>
+          </div>
+          <span class="paste-step-arrow">›</span>
+          <div class="paste-step">
+            <span class="paste-step-num">4</span>
+            <span data-i18n="padletStep4">위치 조정 & 저장!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Padlet iframe / placeholder -->
+      <div class="padlet-body" id="padlet-body">
+        <div class="padlet-empty">
+          <span class="padlet-empty-icon">🗺️</span>
+          <p class="padlet-empty-title" data-i18n="padletEmptyTitle">패들렛 전시 공간</p>
+          <p data-i18n="padletEmptyBody">카드를 복사한 뒤<br /><strong>Ctrl+V</strong>를 누르면 바로 전시! 🎉</p>
+        </div>
+      </div>
+
+    </div><!-- /panel-right -->
+
+  </div><!-- /split -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <a href="https://litt.ly/chichiboo" target="_blank" rel="noopener"
+      class="footer-link" id="footer-credit">
+      🎭 <span data-i18n="footerCredit">Created by. 교육뮤지컬 꿈꾸는 치수쌤</span>
+    </a>
+  </footer>
+
+</div><!-- /app -->
+
+<!-- ===== ADMIN MODAL ===== -->
+<div class="modal-overlay" id="admin-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-title" data-i18n="adminTitle">관리자 설정</span>
+      <button class="modal-close" id="btn-admin-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Password section -->
+    <div id="admin-pw-section">
+      <div class="admin-note">
+        ⚠️ 비밀번호는 소스코드에 저장되어 완전한 보안은 아닙니다. 패들렛 주소 등 실수 방지 용도로 사용해 주세요.
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" data-i18n="adminPwLabel">관리자 비밀번호를 입력해 주세요</label>
+        <div class="modal-input-row">
+          <input type="password" id="admin-pw-input" class="f-input"
+            data-i18n-placeholder="adminPwPlaceholder"
+            placeholder="비밀번호" autocomplete="off" />
+          <button class="modal-submit" id="admin-pw-btn" data-i18n="adminPwBtn">확인</button>
+        </div>
+        <div class="pw-err" id="pw-err" data-i18n="adminPwError">비밀번호가 맞지 않습니다.</div>
+      </div>
+    </div>
+
+    <!-- Admin settings (shown after correct password) -->
+    <div class="admin-settings" id="admin-settings">
+      <div class="modal-field">
+        <label class="modal-label" data-i18n="adminPadletLabel">패들렛 주소</label>
+        <input type="url" id="admin-padlet-input" class="f-input"
+          data-i18n-placeholder="adminPadletPlaceholder"
+          placeholder="https://padlet.com/..." />
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn-save" id="admin-save-btn" data-i18n="adminSave">저장</button>
+        <button class="modal-btn-reset" id="admin-reset-btn" data-i18n="adminReset">기본값으로 초기화</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast" role="status">
+  <span id="t-icon">✅</span>
+  <span id="t-msg"></span>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

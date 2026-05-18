@@ -21,6 +21,9 @@
 ## 🚀 실행 방법
 
 ```bash
+npm install
+npm run dev
+# 또는
 pnpm install
 pnpm dev
 ```
@@ -28,7 +31,7 @@ pnpm dev
 ## 📁 파일 구조
 
 ```
-index.html        ← 앱 HTML 구조
+index.html        ← 앱 진입점
 src/
   main.js         ← 앱 로직 (언어·카테고리·카드·관리자모드)
   i18n.js         ← 4개국어 번역 데이터
@@ -38,6 +41,6 @@ public/
   favicon.svg
 ```
 
-## 📄 Created by
+## 📄 Made by
 
 [교육뮤지컬 꿈꾸는 치수쌤](https://litt.ly/chichiboo)
