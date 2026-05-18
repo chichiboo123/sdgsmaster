@@ -294,6 +294,7 @@ function makeCard() {
     </div>`;
 
   cardReady = true;
+  document.getElementById('card-workspace')?.classList.add('ready');
   ['btn-txt', 'btn-img'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = false;
