@@ -49,6 +49,14 @@
         </span>
       </nav>
 
+      <!-- Citation helper button -->
+      <button type="button" class="cite-icon-btn" id="btn-cite" data-i18n-title="citeBtnTitle" title="출처표기 도우미">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+          <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+        </svg>
+      </button>
+
       <!-- Language switcher (KRDS segmented control) -->
       <div class="lang-sw" role="radiogroup" aria-label="언어 선택 / Language">
         <button type="button" class="lang-btn active" data-lang="ko" role="radio" aria-checked="true" aria-label="한국어">KO</button>
@@ -326,6 +334,104 @@
   </footer>
 
 </div><!-- /app -->
+
+<!-- ===== CITE MODAL ===== -->
+<div class="modal-overlay" id="cite-modal" role="dialog" aria-modal="true">
+  <div class="modal-box cite-modal-box">
+    <div class="modal-head">
+      <span class="modal-title cite-modal-title" data-i18n="citeModalTitle">📝 출처표기 도우미</span>
+      <button type="button" class="modal-close" id="btn-cite-close" aria-label="Close">✕</button>
+    </div>
+    <p class="cite-subtitle" data-i18n="citeModalSubtitle">자료 출처를 쉽게 만들어요</p>
+
+    <!-- Tabs -->
+    <div class="cite-tabs" role="tablist">
+      <button type="button" class="cite-tab active" id="cite-tab-book" data-tab="book" role="tab" data-i18n="citeTabBook">📚 책</button>
+      <button type="button" class="cite-tab" id="cite-tab-web" data-tab="web" role="tab" data-i18n="citeTabWeb">🌐 웹사이트</button>
+      <button type="button" class="cite-tab" id="cite-tab-news" data-tab="news" role="tab" data-i18n="citeTabNews">📰 신문기사</button>
+    </div>
+
+    <!-- Book form -->
+    <div class="cite-form" id="cite-form-book">
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeBookAuthor">저자 이름</label>
+        <input type="text" id="cite-book-author" class="f-input" data-i18n-placeholder="citeBookAuthorPlaceholder" placeholder="예: 홍길동" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeBookYear">출판 연도</label>
+        <input type="number" id="cite-book-year" class="f-input" data-i18n-placeholder="citeBookYearPlaceholder" placeholder="예: 2024" min="1000" max="9999" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeBookTitle">책 제목</label>
+        <input type="text" id="cite-book-title" class="f-input" data-i18n-placeholder="citeBookTitlePlaceholder" placeholder="예: 지구를 지켜요" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeBookPublisher">출판사</label>
+        <input type="text" id="cite-book-publisher" class="f-input" data-i18n-placeholder="citeBookPublisherPlaceholder" placeholder="예: ○○출판사" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeBookPage">쪽수 (선택)</label>
+        <input type="number" id="cite-book-page" class="f-input" data-i18n-placeholder="citeBookPagePlaceholder" placeholder="예: 45" min="1" />
+      </div>
+      <div class="cite-format-preview">
+        <span class="cite-format-label" data-i18n="citeFormatLabel">형식 미리보기</span>
+        <span class="cite-format-text" data-i18n="citeBookFormat">저자. (출판년도). 『제목』. 출판사, p.쪽수.</span>
+      </div>
+    </div>
+
+    <!-- Web form -->
+    <div class="cite-form" id="cite-form-web" style="display:none">
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeWebSiteName">사이트 이름</label>
+        <input type="text" id="cite-web-name" class="f-input" data-i18n-placeholder="citeWebSiteNamePlaceholder" placeholder="예: 환경부 누리집" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeWebAccessDate">접속한 날짜</label>
+        <input type="date" id="cite-web-date" class="f-input" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeWebUrl">URL 주소</label>
+        <input type="text" id="cite-web-url" class="f-input" data-i18n-placeholder="citeWebUrlPlaceholder" placeholder="https://..." />
+      </div>
+      <div class="cite-format-preview">
+        <span class="cite-format-label" data-i18n="citeFormatLabel">형식 미리보기</span>
+        <span class="cite-format-text" data-i18n="citeWebFormat">사이트명. (접속일: YYYY년 MM월 DD일). URL.</span>
+      </div>
+    </div>
+
+    <!-- News form -->
+    <div class="cite-form" id="cite-form-news" style="display:none">
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeNewsReporter">기자 이름</label>
+        <input type="text" id="cite-news-reporter" class="f-input" data-i18n-placeholder="citeNewsReporterPlaceholder" placeholder="예: 김기자" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeNewsDate">날짜</label>
+        <input type="date" id="cite-news-date" class="f-input" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeNewsTitle">기사 제목</label>
+        <input type="text" id="cite-news-title" class="f-input" data-i18n-placeholder="citeNewsTitlePlaceholder" placeholder="예: 환경을 지키는 어린이들" />
+      </div>
+      <div class="cite-field">
+        <label class="cite-label" data-i18n="citeNewsSource">신문사 이름</label>
+        <input type="text" id="cite-news-source" class="f-input" data-i18n-placeholder="citeNewsSourcePlaceholder" placeholder="예: 어린이조선일보" />
+      </div>
+      <div class="cite-format-preview">
+        <span class="cite-format-label" data-i18n="citeFormatLabel">형식 미리보기</span>
+        <span class="cite-format-text" data-i18n="citeNewsFormat">기자명. (날짜). 「제목」. 신문사명.</span>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-make cite-gen-btn" id="btn-cite-generate" data-i18n="citeBtnGenerate">✨ 출처 만들기</button>
+
+    <!-- Result area (hidden initially) -->
+    <div class="cite-result" id="cite-result" style="display:none">
+      <div class="cite-result-text" id="cite-result-text"></div>
+      <button type="button" class="cite-copy-btn" id="btn-cite-copy" data-i18n="citeBtnCopy">📋 복사</button>
+    </div>
+  </div>
+</div>
 
 <!-- ===== ADMIN MODAL ===== -->
 <div class="modal-overlay" id="admin-modal" role="dialog" aria-modal="true">

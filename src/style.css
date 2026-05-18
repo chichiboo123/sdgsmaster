@@ -155,6 +155,28 @@ body {
 .step-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .step-arrow { color: var(--text-dim); font-size: 10px; padding: 0 1px; }
 
+/* Citation icon button (header) */
+.cite-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: var(--t);
+  flex-shrink: 0;
+}
+
+.cite-icon-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-lt);
+}
+
 /* Lang switcher — KRDS segmented control */
 .lang-sw {
   display: flex;
@@ -693,9 +715,54 @@ textarea.f-textarea {
 
 .sdg-btn.on {
   border-color: rgba(255,255,255,.8);
-  box-shadow: 0 0 0 3px currentColor, 0 8px 24px rgba(0,0,0,.2);
   transform: translateY(-4px) scale(1.12);
   z-index: 6;
+}
+
+/* Main goal — gold star badge, strong ring */
+.sdg-btn.on.main {
+  box-shadow: 0 0 0 3px currentColor, 0 8px 24px rgba(0,0,0,.2);
+}
+
+.sdg-btn.on.main::after {
+  content: '★';
+  position: absolute;
+  top: -7px; right: -7px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #FFD700;
+  color: #7A5200;
+  font-size: 9px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.28);
+  z-index: 10;
+}
+
+/* Sub goal — lighter ring, plus badge */
+.sdg-btn.on.sub {
+  box-shadow: 0 0 0 2px currentColor, 0 4px 14px rgba(0,0,0,.15);
+  opacity: .88;
+  transform: translateY(-2px) scale(1.06);
+}
+
+.sdg-btn.on.sub::after {
+  content: '+';
+  position: absolute;
+  top: -7px; right: -7px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.22);
+  z-index: 10;
 }
 
 /* Tooltip */
@@ -763,6 +830,24 @@ textarea.f-textarea {
 
 .sdg-banner-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 
+/* Banner sub-goal pills */
+.banner-sub-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.banner-sub-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+
 /* =============================================
    DIVIDER
 ============================================= */
@@ -812,9 +897,33 @@ textarea.f-textarea {
 
 .ic-top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 13px;
+}
+
+/* Card goal wrap (main + sub pills) */
+.ic-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 62%;
+}
+
+.ic-sub-goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ic-sub-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
 }
 
 .ic-sdg-pill {
@@ -1017,6 +1126,133 @@ textarea.f-textarea {
 .btn-export:disabled {
   opacity: .4;
   cursor: not-allowed;
+}
+
+/* =============================================
+   CITATION MODAL
+============================================= */
+.cite-modal-box {
+  max-width: 500px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.cite-modal-title::before { content: ''; }
+
+.cite-subtitle {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-top: -16px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.cite-tabs {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.cite-tab {
+  flex: 1;
+  padding: 9px 6px;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: var(--surface-alt);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: var(--t);
+  white-space: nowrap;
+}
+
+.cite-tab:last-child { border-right: none; }
+.cite-tab:hover { background: var(--blue-lt); color: var(--blue); }
+.cite-tab.active { background: var(--blue); color: #fff; }
+
+.cite-form { margin-bottom: 14px; }
+
+.cite-field { margin-bottom: 10px; }
+
+.cite-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+
+.cite-format-preview {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 9px 12px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cite-format-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.cite-format-text {
+  font-size: 12px;
+  color: var(--text-sub);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.cite-gen-btn {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.cite-result {
+  background: linear-gradient(135deg, #EBF1FF, #F3EDFF);
+  border: 1.5px solid var(--blue);
+  border-radius: var(--r-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cite-result-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.cite-copy-btn {
+  align-self: flex-start;
+  border: 1.5px solid var(--blue);
+  background: var(--blue);
+  color: #fff;
+  border-radius: var(--r-sm);
+  padding: 8px 16px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--t);
+}
+
+.cite-copy-btn:hover {
+  background: var(--blue-dk);
+  border-color: var(--blue-dk);
 }
 
 /* =============================================

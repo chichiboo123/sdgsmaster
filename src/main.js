@@ -13,13 +13,17 @@ const LS_PADLET_KEY  = 'sdgsmaster_padlet'; // localStorage key
 ============================================= */
 let selCat    = '';
 let selCatCustom = '';
-let selSDG    = null;
+let selMainSDG = null;
+let selSubSDGs = [];
 let cardReady = false;
 let adminUnlocked = false;
 let footerClickCount = 0;
 let footerClickTimer = null;
 let toastTimer = null;
 let isFullscreen = false;
+
+/* Citation modal state */
+let citeCurrentTab = 'book';
 
 /* =============================================
    INIT
@@ -56,6 +60,25 @@ function buildSDGGrid() {
 }
 
 /* =============================================
+   UPDATE SDG BUTTON VISUAL STATES
+============================================= */
+function updateSDGButtons() {
+  document.querySelectorAll('.sdg-btn').forEach(btn => {
+    const n = Number(btn.dataset.sdg);
+    btn.classList.remove('on', 'main', 'sub');
+    btn.setAttribute('aria-pressed', 'false');
+
+    if (selMainSDG && selMainSDG.n === n) {
+      btn.classList.add('on', 'main');
+      btn.setAttribute('aria-pressed', 'true');
+    } else if (selSubSDGs.some(s => s.n === n)) {
+      btn.classList.add('on', 'sub');
+      btn.setAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+/* =============================================
    LANGUAGE SWITCHER
 ============================================= */
 function switchLang(lang) {
@@ -72,16 +95,18 @@ function switchLang(lang) {
   buildSDGGrid();
 
   // Re-select if was selected
-  if (selSDG) {
-    const btn = document.getElementById('sdg' + selSDG.n);
-    if (btn) btn.classList.add('on');
-    updateSDGBanner(selSDG);
+  if (selMainSDG) {
+    updateSDGButtons();
+    updateSDGBanner(selMainSDG, selSubSDGs);
   }
 
   // Re-select category
   document.querySelectorAll('.cat-btn').forEach(b => {
     b.classList.toggle('on', b.dataset.key === getSelCatKey());
   });
+
+  // Update cite tab labels
+  updateCiteTabLabels();
 
   refreshProgress();
 }
@@ -122,35 +147,67 @@ function getCatDisplay() {
 }
 
 /* =============================================
-   SDG SELECTION
+   SDG SELECTION (multi: main + sub)
 ============================================= */
 function pickSDG(n) {
-  document.querySelectorAll('.sdg-btn').forEach(b => {
-    b.classList.remove('on');
-    b.setAttribute('aria-pressed', 'false');
-  });
-  const btn = document.getElementById('sdg' + n);
-  if (btn) {
-    btn.classList.add('on');
-    btn.setAttribute('aria-pressed', 'true');
+  const sdg = SDGS.find(s => s.n === n);
+  if (!sdg) return;
+
+  if (selMainSDG && selMainSDG.n === n) {
+    // Deselect main
+    if (selSubSDGs.length > 0) {
+      // Promote first sub to main
+      selMainSDG = selSubSDGs.shift();
+    } else {
+      selMainSDG = null;
+    }
+  } else if (selSubSDGs.some(s => s.n === n)) {
+    // Deselect this sub
+    selSubSDGs = selSubSDGs.filter(s => s.n !== n);
+  } else if (!selMainSDG) {
+    // No main yet — set as main
+    selMainSDG = sdg;
+  } else {
+    // Main exists — add as sub
+    selSubSDGs.push(sdg);
   }
-  selSDG = SDGS.find(s => s.n === n);
-  updateSDGBanner(selSDG);
-  hideErr('e-sdg');
+
+  updateSDGButtons();
+
+  if (selMainSDG) {
+    updateSDGBanner(selMainSDG, selSubSDGs);
+    hideErr('e-sdg');
+  } else {
+    // Clear banner
+    const banner = document.getElementById('sdg-banner');
+    banner.classList.remove('show');
+  }
+
   refreshProgress();
 }
 
-function updateSDGBanner(sdg) {
+function updateSDGBanner(mainSdg, subSdgs = []) {
   const banner = document.getElementById('sdg-banner');
   const dot    = document.getElementById('sdg-banner-dot');
   const text   = document.getElementById('sdg-banner-text');
   const lang   = getLang();
-  const [, tip2] = sdg.tips[lang].split('\n');
+  const [, tip2] = mainSdg.tips[lang].split('\n');
 
-  dot.style.background = sdg.col;
-  text.innerHTML = `<strong>${t('step2Label').includes('Connect') ? 'Goal' : '목표'} ${sdg.n}: ${sdg.labels[lang]}</strong> — ${tip2}`;
-  banner.style.background = hexAlpha(sdg.col, 0.09);
-  banner.style.color = sdg.col;
+  dot.style.background = mainSdg.col;
+
+  let html = `<strong>★ Goal ${mainSdg.n}: ${esc(mainSdg.labels[lang])}</strong> — ${esc(tip2)}`;
+
+  if (subSdgs.length > 0) {
+    html += `<div class="banner-sub-pills">`;
+    subSdgs.forEach(s => {
+      html += `<span class="banner-sub-pill" style="background:${s.col}">+${s.n} ${esc(s.labels[lang])}</span>`;
+    });
+    html += `</div>`;
+  }
+
+  text.innerHTML = html;
+  banner.style.background = hexAlpha(mainSdg.col, 0.09);
+  banner.style.color = mainSdg.col;
   banner.classList.add('show');
 }
 
@@ -168,7 +225,7 @@ function makeCard() {
   if (selCat === 'other' && !v('cat-other-input'))
                           { showErr('e-cat-other'); ok = false; } else hideErr('e-cat-other');
   if (!sit)               { showErr('e-sit');       ok = false; } else hideErr('e-sit');
-  if (!selSDG)            { showErr('e-sdg');       ok = false; } else hideErr('e-sdg');
+  if (!selMainSDG)        { showErr('e-sdg');       ok = false; } else hideErr('e-sdg');
   if (!action)            { showErr('e-action');    ok = false; } else hideErr('e-action');
 
   if (!ok) { showToast('⚠️', t('toastValidationFail')); return; }
@@ -183,34 +240,47 @@ function makeCard() {
   );
 
   const catLabel   = getCatDisplay();
-  const sdgLabel   = selSDG.labels[getLang()];
+  const sdgLabel   = selMainSDG.labels[getLang()];
   const actionLbl  = t('cardActionLabel');
   const brand      = t('cardBrand');
-  const bg1 = hexAlpha(selSDG.col, 0.10);
-  const bg2 = hexAlpha(selSDG.col, 0.04);
+  const bg1 = hexAlpha(selMainSDG.col, 0.10);
+  const bg2 = hexAlpha(selMainSDG.col, 0.04);
+
+  // Build sub-goals pills HTML for card
+  let subPillsHtml = '';
+  if (selSubSDGs.length > 0) {
+    subPillsHtml = `<div class="ic-sub-goals">`;
+    selSubSDGs.forEach(s => {
+      subPillsHtml += `<span class="ic-sub-pill" style="background:${s.col}">+${s.n} ${esc(s.labels[getLang()])}</span>`;
+    });
+    subPillsHtml += `</div>`;
+  }
 
   const cpw = document.getElementById('cpw');
   cpw.classList.add('has-card');
   cpw.innerHTML = `
     <div class="insight-card" id="icard" style="
       background: linear-gradient(135deg, ${bg1} 0%, ${bg2} 100%);
-      border-left: 5px solid ${selSDG.col};
+      border-left: 5px solid ${selMainSDG.col};
     ">
       <div class="ic-deco" style="
-        background:${selSDG.col}; opacity:.12;
+        background:${selMainSDG.col}; opacity:.12;
         top:-36px; right:-36px; width:130px; height:130px;"></div>
       <div class="ic-deco" style="
-        background:${selSDG.col}; opacity:.08;
+        background:${selMainSDG.col}; opacity:.08;
         bottom:-24px; left:-24px; width:90px; height:90px;"></div>
 
       <div class="ic-top">
-        <div class="ic-sdg-pill" style="background:${selSDG.col}">
-          <span class="ic-sdg-num">${selSDG.n}</span>
-          ${esc(sdgLabel)}
+        <div class="ic-top-left">
+          <div class="ic-sdg-pill" style="background:${selMainSDG.col}">
+            <span class="ic-sdg-num">${selMainSDG.n}</span>
+            ${esc(sdgLabel)}
+          </div>
+          ${subPillsHtml}
         </div>
         <span class="ic-cat" style="
-          background:${hexAlpha(selSDG.col,.12)};
-          color:${selSDG.col}">${esc(catLabel)}</span>
+          background:${hexAlpha(selMainSDG.col,.12)};
+          color:${selMainSDG.col}">${esc(catLabel)}</span>
       </div>
 
       <p class="ic-situation">"${esc(sit)}"</p>
@@ -247,13 +317,17 @@ function buildTxtContent() {
     { year:'numeric', month:'long', day:'numeric' }
   );
   const lang = getLang();
+  const subGoalsTxt = selSubSDGs.length > 0
+    ? `\n${lang === 'ko' ? '서브 목표' : lang === 'ja' ? 'サブ目標' : lang === 'id' ? 'Tujuan Tambahan' : 'Sub Goals'}: ` +
+      selSubSDGs.map(s => `SDG ${s.n} ${s.labels[lang]}`).join(', ')
+    : '';
   const lines = [
     `[SDGs Master] Insight Card`,
     `${'='.repeat(32)}`,
     `${lang === 'ko' ? '이름' : lang === 'ja' ? '名前' : lang === 'id' ? 'Nama' : 'Name'}: ${name}`,
     `${lang === 'ko' ? '날짜' : lang === 'ja' ? '日付' : lang === 'id' ? 'Tanggal' : 'Date'}: ${today}`,
     `${lang === 'ko' ? '발견 장소' : lang === 'ja' ? '発見場所' : lang === 'id' ? 'Tempat' : 'Where'}: ${getCatDisplay()}`,
-    `SDG Goal ${selSDG.n}: ${selSDG.labels[lang]}`,
+    `SDG Goal ${selMainSDG.n}: ${selMainSDG.labels[lang]}${subGoalsTxt}`,
     ``,
     `[${lang === 'ko' ? '상황' : lang === 'ja' ? '状況' : lang === 'id' ? 'Situasi' : 'Situation'}]`,
     sit,
@@ -267,7 +341,7 @@ function buildTxtContent() {
 }
 
 async function exportTxt(mode) {
-  if (!selSDG) return;
+  if (!selMainSDG) return;
   const content = buildTxtContent();
   if (mode === 'clipboard') {
     try {
@@ -542,7 +616,7 @@ function handleFooterClick(e) {
 function refreshProgress() {
   const s1 = v('inp-name') && selCat &&
     (selCat !== 'other' || v('cat-other-input')) && v('inp-sit');
-  const s2 = selSDG && v('inp-action');
+  const s2 = selMainSDG && v('inp-action');
   const s3 = cardReady;
 
   setPB('pb1', 'hchip1', s1, true);
@@ -557,6 +631,155 @@ function setPB(pbId, chipId, done, active) {
     if (done)        el.classList.add('done');
     else if (active) el.classList.add('active');
   });
+}
+
+/* =============================================
+   CITATION MODAL
+============================================= */
+function openCiteModal() {
+  document.getElementById('cite-modal').classList.add('show');
+  updateCiteTabLabels();
+}
+
+function closeCiteModal() {
+  document.getElementById('cite-modal').classList.remove('show');
+}
+
+function switchCiteTab(type) {
+  citeCurrentTab = type;
+
+  // Update tab buttons
+  document.querySelectorAll('.cite-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === type);
+  });
+
+  // Show/hide forms
+  ['book', 'web', 'news'].forEach(t => {
+    const form = document.getElementById('cite-form-' + t);
+    if (form) form.style.display = t === type ? 'block' : 'none';
+  });
+
+  // Hide result on tab switch
+  const result = document.getElementById('cite-result');
+  if (result) result.style.display = 'none';
+}
+
+function updateCiteTabLabels() {
+  const tabBook = document.getElementById('cite-tab-book');
+  const tabWeb  = document.getElementById('cite-tab-web');
+  const tabNews = document.getElementById('cite-tab-news');
+  if (tabBook) tabBook.innerHTML = t('citeTabBook');
+  if (tabWeb)  tabWeb.innerHTML  = t('citeTabWeb');
+  if (tabNews) tabNews.innerHTML = t('citeTabNews');
+}
+
+function generateCite() {
+  const lang = getLang();
+  let result = '';
+
+  if (citeCurrentTab === 'book') {
+    const author    = document.getElementById('cite-book-author')?.value.trim() || '';
+    const year      = document.getElementById('cite-book-year')?.value.trim() || '';
+    const title     = document.getElementById('cite-book-title')?.value.trim() || '';
+    const publisher = document.getElementById('cite-book-publisher')?.value.trim() || '';
+    const page      = document.getElementById('cite-book-page')?.value.trim() || '';
+
+    if (lang === 'ko' || lang === 'ja') {
+      const titleWrapped = lang === 'ko' ? `『${title}』` : `『${title}』`;
+      result = `${author}. (${year}). ${titleWrapped}. ${publisher}`;
+      if (page) result += `, p.${page}`;
+      result += '.';
+    } else if (lang === 'id') {
+      result = `${author}. (${year}). ${title}. ${publisher}`;
+      if (page) result += `, hal.${page}`;
+      result += '.';
+    } else {
+      result = `${author}. (${year}). ${title}. ${publisher}`;
+      if (page) result += `, p.${page}`;
+      result += '.';
+    }
+  } else if (citeCurrentTab === 'web') {
+    const siteName = document.getElementById('cite-web-name')?.value.trim() || '';
+    const dateVal  = document.getElementById('cite-web-date')?.value || '';
+    const url      = document.getElementById('cite-web-url')?.value.trim() || '';
+
+    let dateStr = dateVal;
+    if (dateVal) {
+      const d = new Date(dateVal + 'T00:00:00');
+      if (!isNaN(d)) {
+        if (lang === 'ko') {
+          dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+        } else if (lang === 'ja') {
+          dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+        } else if (lang === 'id') {
+          const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+          dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        } else {
+          const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          dateStr = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+        }
+      }
+    }
+
+    if (lang === 'ko') {
+      result = `${siteName}. (접속일: ${dateStr}). ${url}.`;
+    } else if (lang === 'ja') {
+      result = `${siteName}. (アクセス日: ${dateStr}). ${url}.`;
+    } else if (lang === 'id') {
+      result = `${siteName}. (Diakses: ${dateStr}). ${url}.`;
+    } else {
+      result = `${siteName}. (Accessed: ${dateStr}). ${url}.`;
+    }
+  } else if (citeCurrentTab === 'news') {
+    const reporter = document.getElementById('cite-news-reporter')?.value.trim() || '';
+    const dateVal  = document.getElementById('cite-news-date')?.value || '';
+    const title    = document.getElementById('cite-news-title')?.value.trim() || '';
+    const source   = document.getElementById('cite-news-source')?.value.trim() || '';
+
+    let dateStr = dateVal;
+    if (dateVal) {
+      const d = new Date(dateVal + 'T00:00:00');
+      if (!isNaN(d)) {
+        if (lang === 'ko') {
+          dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+        } else if (lang === 'ja') {
+          dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+        } else if (lang === 'id') {
+          const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+          dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        } else {
+          const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          dateStr = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+        }
+      }
+    }
+
+    if (lang === 'ko') {
+      result = `${reporter}. (${dateStr}). 「${title}」. ${source}.`;
+    } else if (lang === 'ja') {
+      result = `${reporter}. (${dateStr}). 「${title}」. ${source}.`;
+    } else {
+      result = `${reporter}. (${dateStr}). "${title}." ${source}.`;
+    }
+  }
+
+  const resultEl = document.getElementById('cite-result');
+  const resultTextEl = document.getElementById('cite-result-text');
+  if (resultEl && resultTextEl) {
+    resultTextEl.textContent = result;
+    resultEl.style.display = 'block';
+  }
+}
+
+async function copyCite() {
+  const text = document.getElementById('cite-result-text')?.textContent || '';
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('📋', t('citeCopied'));
+  } catch {
+    showToast('⚠️', t('toastCopyFail'));
+  }
 }
 
 /* =============================================
@@ -621,8 +844,25 @@ function bindEvents() {
     if (e.key === 'Escape') {
       if (isFullscreen) toggleFullscreen();
       closeAdminModal();
+      closeCiteModal();
     }
   });
+
+  // Citation modal
+  document.getElementById('btn-cite')?.addEventListener('click', openCiteModal);
+  document.getElementById('btn-cite-close')?.addEventListener('click', closeCiteModal);
+  document.getElementById('cite-modal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('cite-modal')) closeCiteModal();
+  });
+
+  // Citation tabs
+  document.querySelectorAll('.cite-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchCiteTab(btn.dataset.tab));
+  });
+
+  // Citation generate & copy
+  document.getElementById('btn-cite-generate')?.addEventListener('click', generateCite);
+  document.getElementById('btn-cite-copy')?.addEventListener('click', copyCite);
 }
 
 /* =============================================
