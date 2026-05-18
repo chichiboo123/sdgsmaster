@@ -209,9 +209,39 @@ function updateSDGBanner(mainSdg, subSdgs = []) {
 }
 
 /* =============================================
+   SDG ICON PRELOAD (data URL for html2canvas)
+============================================= */
+async function preloadSdgIcon(n) {
+  const candidates = [
+    `https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-${String(n).padStart(2,'0')}.jpg`,
+    `https://cdn.jsdelivr.net/gh/open-sdg/sdg-translations@master/assets/img/goals/en/${n}.png`,
+  ];
+  for (const url of candidates) {
+    const result = await new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      const timer = setTimeout(() => resolve(null), 4000);
+      img.onload = () => {
+        clearTimeout(timer);
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          resolve(c.toDataURL('image/png'));
+        } catch { resolve(url); }
+      };
+      img.onerror = () => { clearTimeout(timer); resolve(null); };
+      img.src = url;
+    });
+    if (result) return result;
+  }
+  return null;
+}
+
+/* =============================================
    MAKE CARD
 ============================================= */
-function makeCard() {
+async function makeCard() {
   const name   = v('inp-name');
   const sit    = v('inp-sit');
   const action = v('inp-action');
@@ -230,68 +260,83 @@ function makeCard() {
   if (selCat === 'other') selCatCustom = v('cat-other-input');
 
   const sourceText = v('inp-source');
+  const lang       = getLang();
 
   const today = new Date().toLocaleDateString(
-    getLang() === 'ko' ? 'ko-KR' :
-    getLang() === 'ja' ? 'ja-JP' :
-    getLang() === 'id' ? 'id-ID' : 'en-US',
+    lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'id' ? 'id-ID' : 'en-US',
     { year:'numeric', month:'long', day:'numeric' }
   );
 
-  const catLabel   = getCatDisplay();
-  const sdgLabel   = selMainSDG.labels[getLang()];
-  const actionLbl  = t('cardActionLabel');
-  const brand      = t('cardBrand');
-  const bg1 = hexAlpha(selMainSDG.col, 0.10);
-  const bg2 = hexAlpha(selMainSDG.col, 0.04);
+  const catLabel  = getCatDisplay();
+  const sdgLabel  = selMainSDG.labels[lang];
+  const brand     = t('cardBrand');
 
-  // Build sub-goals pills HTML for card
+  // Lighter background
+  const bg1 = hexAlpha(selMainSDG.col, 0.05);
+  const bg2 = hexAlpha(selMainSDG.col, 0.02);
+
+  // Section label texts
+  const secSDG  = lang === 'ko' ? '마스터 SDG' : lang === 'ja' ? 'マスターSDG' : lang === 'id' ? 'SDG Master' : 'Master SDG';
+  const secDisc = lang === 'ko' ? '발견한 사례' : lang === 'ja' ? '発見した事例' : lang === 'id' ? 'Kasus Ditemukan' : 'Discovered Case';
+  const secAct  = lang === 'ko' ? '나의 생각 & 실천' : lang === 'ja' ? 'わたしの考え' : lang === 'id' ? 'Pikiran & Tindakan' : 'My Thoughts & Actions';
+
+  // Sub-goals pills
   let subPillsHtml = '';
   if (selSubSDGs.length > 0) {
     subPillsHtml = `<div class="ic-sub-goals">`;
     selSubSDGs.forEach(s => {
-      subPillsHtml += `<span class="ic-sub-pill" style="background:${s.col}">+${s.n} ${esc(s.labels[getLang()])}</span>`;
+      subPillsHtml += `<span class="ic-sub-pill" style="background:${s.col}">+${s.n} ${esc(s.labels[lang])}</span>`;
     });
     subPillsHtml += `</div>`;
   }
 
-  const sdgIconUrl = `https://open-sdg.github.io/sdg-translations/assets/img/goals/en/${selMainSDG.n}.png`;
+  // Preload SDG icon
+  const makeBtn = document.getElementById('btn-make');
+  if (makeBtn) makeBtn.disabled = true;
+  const iconSrc = await preloadSdgIcon(selMainSDG.n);
+  if (makeBtn) makeBtn.disabled = false;
+
+  const iconHtml = iconSrc
+    ? `<img class="ic-sdg-icon" src="${iconSrc}" alt="SDG ${selMainSDG.n}">`
+    : `<div class="ic-sdg-icon-fallback" style="background:${selMainSDG.col}"><span>${selMainSDG.n}</span></div>`;
 
   const cpw = document.getElementById('cpw');
   cpw.classList.add('has-card');
   cpw.innerHTML = `
     <div class="insight-card" id="icard" style="
-      background: linear-gradient(135deg, ${bg1} 0%, ${bg2} 100%);
-      border-left: 5px solid ${selMainSDG.col};
+      background: linear-gradient(160deg, ${bg1} 0%, ${bg2} 100%);
+      border-top: 5px solid ${selMainSDG.col};
     ">
-      <div class="ic-deco" style="
-        background:${selMainSDG.col}; opacity:.10;
-        top:-36px; right:-36px; width:140px; height:140px;"></div>
-      <div class="ic-deco" style="
-        background:${selMainSDG.col}; opacity:.07;
-        bottom:-28px; left:-28px; width:100px; height:100px;"></div>
-
-      <div class="ic-top">
-        <div class="ic-top-left">
+      <!-- ① SDG 선택 헤더 -->
+      <div class="ic-header" style="border-bottom: 1px solid ${hexAlpha(selMainSDG.col, 0.18)};">
+        ${iconHtml}
+        <div class="ic-header-body">
+          <div class="ic-section-label" style="color:${selMainSDG.col}">${esc(secSDG)}</div>
           <div class="ic-sdg-pill" style="background:${selMainSDG.col}">
-            <span class="ic-sdg-num">${selMainSDG.n}</span>
+            <span class="ic-sdg-num">★ ${selMainSDG.n}</span>
             ${esc(sdgLabel)}
           </div>
           ${subPillsHtml}
-          <span class="ic-cat" style="
-            background:${hexAlpha(selMainSDG.col,.12)};
-            color:${selMainSDG.col}">${esc(catLabel)}</span>
         </div>
-        <img class="ic-sdg-icon" src="${sdgIconUrl}"
-          alt="SDG ${selMainSDG.n}" crossorigin="anonymous"
-          onerror="this.style.display='none'">
       </div>
 
-      <p class="ic-situation">"${toHtml(sit)}"</p>
-      ${sourceText ? `<p class="ic-source">📎 ${esc(sourceText)}</p>` : ''}
-      <p class="ic-action-label">${esc(actionLbl)}</p>
-      <div class="ic-action">${toHtml(action)}</div>
+      <!-- ② 발견한 사례 -->
+      <div class="ic-section" style="border-bottom: 1px solid ${hexAlpha(selMainSDG.col, 0.14)};">
+        <div class="ic-section-label" style="color:${selMainSDG.col}">${esc(secDisc)}</div>
+        <div class="ic-cat-chip" style="background:${hexAlpha(selMainSDG.col,.10)};color:${selMainSDG.col}">
+          ${esc(catLabel)}
+        </div>
+        <p class="ic-situation">${toHtml(sit)}</p>
+        ${sourceText ? `<p class="ic-source">${esc(sourceText)}</p>` : ''}
+      </div>
 
+      <!-- ③ 나의 생각 & 실천 -->
+      <div class="ic-section">
+        <div class="ic-section-label" style="color:${selMainSDG.col}">${esc(secAct)}</div>
+        <div class="ic-action">${toHtml(action)}</div>
+      </div>
+
+      <!-- 푸터 -->
       <div class="ic-footer">
         <span class="ic-logo">${esc(brand)}</span>
         <span class="ic-meta">by ${esc(name)} · ${today}</span>
@@ -489,8 +534,8 @@ function toggleFullscreen() {
 
   const btn = document.getElementById('btn-fullscreen');
   btn.innerHTML = isFullscreen
-    ? `⤡ <span data-i18n="padletExitFullscreen">${t('padletExitFullscreen')}</span>`
-    : `⤢ <span data-i18n="padletFullscreen">${t('padletFullscreen')}</span>`;
+    ? `<span class="ms">fullscreen_exit</span> <span data-i18n="padletExitFullscreen">${t('padletExitFullscreen')}</span>`
+    : `<span class="ms">fullscreen</span> <span data-i18n="padletFullscreen">${t('padletFullscreen')}</span>`;
 
   if (isFullscreen) {
     btn.style.position = 'fixed';
@@ -649,12 +694,15 @@ function switchCiteTab(type) {
 }
 
 function updateCiteTabLabels() {
-  const tabBook = document.getElementById('cite-tab-book');
-  const tabWeb  = document.getElementById('cite-tab-web');
-  const tabNews = document.getElementById('cite-tab-news');
-  if (tabBook) tabBook.innerHTML = t('citeTabBook');
-  if (tabWeb)  tabWeb.innerHTML  = t('citeTabWeb');
-  if (tabNews) tabNews.innerHTML = t('citeTabNews');
+  const tabs = [
+    { id: 'cite-tab-book', icon: 'menu_book', key: 'citeTabBook' },
+    { id: 'cite-tab-web',  icon: 'language',  key: 'citeTabWeb' },
+    { id: 'cite-tab-news', icon: 'article',   key: 'citeTabNews' },
+  ];
+  tabs.forEach(({ id, icon, key }) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<span class="ms">${icon}</span> ${t(key)}`;
+  });
 }
 
 function generateCite() {
@@ -866,6 +914,16 @@ function bindEvents() {
   // Citation generate & copy
   document.getElementById('btn-cite-generate')?.addEventListener('click', generateCite);
   document.getElementById('btn-cite-copy')?.addEventListener('click', copyCite);
+
+  // Auto-grow textareas
+  document.querySelectorAll('textarea.f-textarea').forEach(ta => {
+    const grow = () => {
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    };
+    ta.addEventListener('input', grow);
+    grow();
+  });
 }
 
 /* =============================================

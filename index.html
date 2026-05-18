@@ -11,9 +11,9 @@
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-gov.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -66,7 +66,7 @@
       </select>
 
       <!-- Help / Usage button -->
-      <button type="button" class="help-btn" id="btn-help" data-i18n="helpBtnLabel">사용법</button>
+      <button type="button" class="help-btn" id="btn-help" aria-label="Help"><span class="ms">help_outline</span></button>
     </div>
   </header>
 
@@ -95,7 +95,7 @@
       <!-- ===== STEP 1 ===== -->
       <div class="card">
         <div class="card-head">
-          <div class="card-icon ci-green">🔗</div>
+          <div class="card-icon ci-green"><span class="ms ms-filled">target</span></div>
           <div class="card-head-text">
             <h2 data-i18n="step1Title">1단계 · SDGs와 연결 (Connect)</h2>
             <p data-i18n="step1Desc">아이콘에 마우스를 올려 설명을 보고, 관련 목표 1개를 선택하세요</p>
@@ -104,7 +104,8 @@
 
         <div class="field">
           <div class="field-label">
-            <span data-i18n="labelSDG">🌍 가장 관련 깊은 SDG 목표는?</span>
+            <span class="ms ms-filled field-label-icon">gps_fixed</span>
+            <span data-i18n="labelSDG">당신이 마스터할 SDGs 카드를 선택하세요!</span>
             <span class="req">*</span>
           </div>
 
@@ -124,7 +125,7 @@
       <!-- ===== STEP 2 ===== -->
       <div class="card">
         <div class="card-head">
-          <div class="card-icon ci-blue">🔍</div>
+          <div class="card-icon ci-blue"><span class="ms ms-filled">search</span></div>
           <div class="card-head-text">
             <h2 data-i18n="step2Title">2단계 · 사례 발견 (Discover)</h2>
             <p data-i18n="step2Desc">일상 속에서 SDGs와 관련된 사례를 찾아보세요</p>
@@ -134,6 +135,7 @@
         <!-- Name -->
         <div class="field">
           <div class="field-label">
+            <span class="ms field-label-icon">person</span>
             <span data-i18n="labelName">이름 (닉네임)</span>
             <span class="req">*</span>
           </div>
@@ -147,24 +149,25 @@
         <!-- Where found — 4 categories -->
         <div class="field">
           <div class="field-label">
-            <span data-i18n="labelWhere">📍 어디서 발견했나요?</span>
+            <span class="ms ms-filled field-label-icon">location_on</span>
+            <span data-i18n="labelWhere">어디서 발견했나요?</span>
             <span class="req">*</span>
           </div>
           <div class="cat-grid" role="radiogroup" aria-label="Where">
             <button type="button" class="cat-btn" data-key="daily" role="radio" aria-checked="false">
-              <span class="ci" aria-hidden="true">🏠</span>
+              <span class="ci ms ms-filled" aria-hidden="true">home</span>
               <span data-i18n="catDaily">일상</span>
             </button>
             <button type="button" class="cat-btn" data-key="book" role="radio" aria-checked="false">
-              <span class="ci" aria-hidden="true">📚</span>
+              <span class="ci ms ms-filled" aria-hidden="true">menu_book</span>
               <span data-i18n="catBook">교과서나 책</span>
             </button>
             <button type="button" class="cat-btn" data-key="internet" role="radio" aria-checked="false">
-              <span class="ci" aria-hidden="true">🌐</span>
+              <span class="ci ms ms-filled" aria-hidden="true">language</span>
               <span data-i18n="catInternet">인터넷</span>
             </button>
             <button type="button" class="cat-btn" data-key="other" role="radio" aria-checked="false">
-              <span class="ci" aria-hidden="true">✏️</span>
+              <span class="ci ms" aria-hidden="true">edit</span>
               <span data-i18n="catOther">기타</span>
             </button>
           </div>
@@ -183,33 +186,35 @@
         <!-- Situation -->
         <div class="field">
           <div class="field-label">
-            <span data-i18n="labelSituation">💬 어떤 상황인가요?</span>
+            <span class="ms ms-filled field-label-icon">chat</span>
+            <span data-i18n="labelSituation">어떤 상황인가요?</span>
             <span class="req">*</span>
           </div>
           <textarea id="inp-sit" class="f-textarea"
             data-i18n-placeholder="placeholderSituation"
             placeholder="예: 공원에서 쓰레기를 분리배출하는 사람들을 봤어요."
-            maxlength="300" rows="4"></textarea>
+            maxlength="300"></textarea>
           <div class="err-msg" id="e-sit" data-i18n="errSituation">상황을 입력해 주세요.</div>
         </div>
 
         <!-- Source (optional) -->
         <div class="field">
           <div class="field-label">
-            <span data-i18n="labelSource">📎 출처</span>
+            <span class="ms field-label-icon">attach_file</span>
+            <span data-i18n="labelSource">출처</span>
             <span class="opt-label" data-i18n="optLabel">선택</span>
           </div>
           <textarea id="inp-source" class="f-textarea"
             data-i18n-placeholder="placeholderSource"
             placeholder="출처표기 도우미에서 만든 출처를 붙여넣으세요"
-            maxlength="400" rows="2"></textarea>
+            maxlength="400"></textarea>
         </div>
       </div>
 
       <!-- ===== STEP 3 ===== -->
       <div class="card step3-card">
         <div class="card-head">
-          <div class="card-icon ci-pink">✨</div>
+          <div class="card-icon ci-pink"><span class="ms ms-filled">auto_awesome</span></div>
           <div class="card-head-text">
             <h2 data-i18n="step3Title">3단계 · 마스터 카드 (Master Card)</h2>
             <p data-i18n="step3Desc">나의 생각을 정리하고 마스터 카드를 완성하세요!</p>
@@ -219,57 +224,59 @@
         <!-- Action / thoughts -->
         <div class="field">
           <div class="field-label">
-            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
+            <span class="ms ms-filled field-label-icon">lightbulb</span>
+            <span data-i18n="labelAction">나의 생각 &amp; 우리가 할 수 있는 실천</span>
             <span class="req">*</span>
           </div>
           <textarea id="inp-action" class="f-textarea"
             data-i18n-placeholder="placeholderAction"
             placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
-            maxlength="300" rows="3"></textarea>
+            maxlength="300"></textarea>
           <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
         </div>
 
         <!-- Primary action: make card (full-width, prominent) -->
         <button type="button" class="btn btn-make" id="btn-make">
-          <span data-i18n="btnMakeCard">✨ 마스터 카드 만들기</span>
+          <span class="ms ms-filled">auto_awesome</span>
+          <span data-i18n="btnMakeCard">마스터 카드 만들기</span>
         </button>
 
         <!-- Unified card workspace: preview + export bar -->
         <div class="card-workspace" id="card-workspace">
           <div class="card-preview-wrap" id="cpw">
             <div class="card-empty">
-              <span class="card-empty-icon">🃏</span>
+              <span class="ms ms-filled card-empty-icon">style</span>
               <p data-i18n="cardEmptyHint">위 버튼을 눌러 나만의 카드를 만들어 보세요!</p>
             </div>
           </div>
 
           <!-- Export bar (revealed when card is ready) -->
           <div class="export-bar" id="export-section">
-            <span class="export-bar-label" data-i18n="exportTitle">📤 내보내기</span>
+            <span class="export-bar-label" data-i18n="exportTitle">내보내기</span>
             <div class="export-bar-btns">
               <div class="export-btn-wrap" id="export-txt-wrap">
                 <button type="button" class="btn-export-main" id="btn-txt" disabled>
-                  <span class="export-btn-icon">📝</span> TXT
+                  <span class="ms export-btn-icon">description</span> TXT
                 </button>
                 <div class="export-dropdown" id="export-txt-dd">
                   <button type="button" class="export-dd-item" id="btn-txt-copy">
-                    <span>📋</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                    <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
                   </button>
                   <button type="button" class="export-dd-item" id="btn-txt-dl">
-                    <span>💾</span><span data-i18n="btnDownload">다운로드</span>
+                    <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
                   </button>
                 </div>
               </div>
               <div class="export-btn-wrap" id="export-img-wrap">
                 <button type="button" class="btn-export-main" id="btn-img" disabled>
-                  <span class="export-btn-icon">🖼️</span> JPG
+                  <span class="ms export-btn-icon">image</span> JPG
                 </button>
                 <div class="export-dropdown" id="export-img-dd">
                   <button type="button" class="export-dd-item" id="btn-img-copy">
-                    <span>📋</span><span data-i18n="btnClipboard">클립보드 복사</span>
+                    <span class="ms">content_copy</span><span data-i18n="btnClipboard">클립보드 복사</span>
                   </button>
                   <button type="button" class="export-dd-item" id="btn-img-dl">
-                    <span>💾</span><span data-i18n="btnDownload">다운로드</span>
+                    <span class="ms">download</span><span data-i18n="btnDownload">다운로드</span>
                   </button>
                 </div>
               </div>
@@ -297,10 +304,10 @@
         <span class="padlet-bar-title" data-i18n="padletTitle">우리 반 전시 공간</span>
         <div class="padlet-bar-actions">
           <button type="button" class="padlet-icon-btn" id="btn-padlet-newtab" aria-label="Open Padlet in new tab">
-            ↗ <span data-i18n="padletOpenNew">새 탭에서 열기</span>
+            <span class="ms">open_in_new</span> <span data-i18n="padletOpenNew">새 탭에서 열기</span>
           </button>
           <button type="button" class="padlet-icon-btn" id="btn-fullscreen" aria-label="Toggle fullscreen">
-            ⤢ <span data-i18n="padletFullscreen">전체 화면</span>
+            <span class="ms">fullscreen</span> <span data-i18n="padletFullscreen">전체 화면</span>
           </button>
         </div>
       </div>
@@ -346,7 +353,7 @@
   <footer class="footer">
     <a href="https://litt.ly/chichiboo" target="_blank" rel="noopener"
       class="footer-link" id="footer-credit">
-      🎭 <span data-i18n="footerCredit">Created by. 교육뮤지컬 꿈꾸는 치수쌤</span>
+      <span data-i18n="footerCredit">Created by. 교육뮤지컬 꿈꾸는 치수쌤</span>
     </a>
   </footer>
 
@@ -357,7 +364,7 @@
   <div class="modal-box help-modal-box">
     <div class="modal-head">
       <span class="modal-title help-modal-title" data-i18n="helpModalTitle">SDGs 마스터 사용법</span>
-      <button type="button" class="modal-close" id="btn-help-close" aria-label="Close">✕</button>
+      <button type="button" class="modal-close" id="btn-help-close" aria-label="Close"><span class="ms">close</span></button>
     </div>
     <div class="help-steps">
       <div class="help-step" data-i18n="helpStep1">📍 1단계: 이름, 발견 장소, 상황을 입력하고 출처가 있으면 붙여넣어요.</div>
@@ -372,16 +379,16 @@
 <div class="modal-overlay" id="cite-modal" role="dialog" aria-modal="true">
   <div class="modal-box cite-modal-box">
     <div class="modal-head">
-      <span class="modal-title cite-modal-title" data-i18n="citeModalTitle">📝 출처표기 도우미</span>
-      <button type="button" class="modal-close" id="btn-cite-close" aria-label="Close">✕</button>
+      <span class="modal-title cite-modal-title" data-i18n="citeModalTitle">출처표기 도우미</span>
+      <button type="button" class="modal-close" id="btn-cite-close" aria-label="Close"><span class="ms">close</span></button>
     </div>
     <p class="cite-subtitle" data-i18n="citeModalSubtitle">자료 출처를 쉽게 만들어요</p>
 
     <!-- Tabs -->
     <div class="cite-tabs" role="tablist">
-      <button type="button" class="cite-tab active" id="cite-tab-book" data-tab="book" role="tab" data-i18n="citeTabBook">📚 책</button>
-      <button type="button" class="cite-tab" id="cite-tab-web" data-tab="web" role="tab" data-i18n="citeTabWeb">🌐 웹사이트</button>
-      <button type="button" class="cite-tab" id="cite-tab-news" data-tab="news" role="tab" data-i18n="citeTabNews">📰 신문기사</button>
+      <button type="button" class="cite-tab active" id="cite-tab-book" data-tab="book" role="tab"><span class="ms">menu_book</span> 책</button>
+      <button type="button" class="cite-tab" id="cite-tab-web" data-tab="web" role="tab"><span class="ms">language</span> 웹사이트</button>
+      <button type="button" class="cite-tab" id="cite-tab-news" data-tab="news" role="tab"><span class="ms">article</span> 신문기사</button>
     </div>
 
     <!-- Book form -->
@@ -456,12 +463,12 @@
       </div>
     </div>
 
-    <button type="button" class="btn btn-make cite-gen-btn" id="btn-cite-generate" data-i18n="citeBtnGenerate">✨ 출처 만들기</button>
+    <button type="button" class="btn btn-make cite-gen-btn" id="btn-cite-generate"><span class="ms ms-filled">auto_awesome</span> <span data-i18n="citeBtnGenerate">출처 만들기</span></button>
 
     <!-- Result area (hidden initially) -->
     <div class="cite-result" id="cite-result" style="display:none">
       <div class="cite-result-text" id="cite-result-text"></div>
-      <button type="button" class="cite-copy-btn" id="btn-cite-copy" data-i18n="citeBtnCopy">📋 복사</button>
+      <button type="button" class="cite-copy-btn" id="btn-cite-copy"><span class="ms">content_copy</span> <span data-i18n="citeBtnCopy">복사</span></button>
     </div>
   </div>
 </div>
@@ -471,7 +478,7 @@
   <div class="modal-box">
     <div class="modal-head">
       <span class="modal-title" data-i18n="adminTitle">관리자 설정</span>
-      <button type="button" class="modal-close" id="btn-admin-close" aria-label="Close">✕</button>
+      <button type="button" class="modal-close" id="btn-admin-close" aria-label="Close"><span class="ms">close</span></button>
     </div>
 
     <!-- Password section -->
