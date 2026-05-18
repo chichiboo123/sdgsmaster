@@ -57,9 +57,46 @@ function buildSDGGrid() {
         <div class="sdg-tip" role="tooltip"><strong>${esc(t1)}</strong><br/>${esc(t2)}</div>
       </button>`;
   }).join('');
+  const globalTip = document.getElementById('sdg-global-tip');
+
   grid.querySelectorAll('.sdg-btn').forEach(btn => {
     btn.addEventListener('click', () => pickSDG(Number(btn.dataset.sdg)));
+
+    if (globalTip) {
+      btn.addEventListener('mouseenter', () => {
+        const lang = getLang();
+        const n = Number(btn.dataset.sdg);
+        const sdg = SDGS.find(s => s.n === n);
+        if (!sdg) return;
+        const [t1, t2] = sdg.tips[lang].split('\n');
+        globalTip.innerHTML = `<strong>${esc(t1)}</strong><br>${esc(t2)}`;
+        showGlobalTip(btn, globalTip);
+      });
+      btn.addEventListener('mouseleave', () => {
+        globalTip.setAttribute('hidden', '');
+      });
+    }
   });
+}
+
+function showGlobalTip(anchor, tip) {
+  const rect = anchor.getBoundingClientRect();
+  const TIP_W = 180;
+  const TIP_H = 68;
+  const ARROW = 10;
+  const MARGIN = 8;
+
+  const showBelow = rect.bottom + ARROW + TIP_H < window.innerHeight - MARGIN;
+  let top = showBelow ? rect.bottom + ARROW : rect.top - ARROW - TIP_H;
+  let left = rect.left + rect.width / 2 - TIP_W / 2;
+
+  if (left < MARGIN) left = MARGIN;
+  if (left + TIP_W > window.innerWidth - MARGIN) left = window.innerWidth - TIP_W - MARGIN;
+
+  tip.style.top = top + 'px';
+  tip.style.left = left + 'px';
+  tip.dataset.pos = showBelow ? 'below' : 'above';
+  tip.removeAttribute('hidden');
 }
 
 /* =============================================
@@ -342,7 +379,7 @@ async function makeCard() {
         <div class="ic-header-body">
           <div class="ic-section-label" style="color:${selMainSDG.col}">${esc(secSDG)}</div>
           <div class="ic-sdg-pill" style="background:${selMainSDG.col}">
-            <span class="ic-sdg-num">★ ${selMainSDG.n}</span>
+            ★ <span class="ic-sdg-num">${selMainSDG.n}</span>
             ${esc(sdgLabel)}
           </div>
           ${subPillsHtml}
