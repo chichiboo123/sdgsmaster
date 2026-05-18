@@ -235,45 +235,37 @@ body {
   min-height: 0;
 }
 
-/* Resize handle */
+/* Resize handle — click to cycle 33/50/67% */
 .resize-handle {
-  cursor: col-resize;
+  cursor: pointer;
   background: var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: background .15s ease;
+  transition: background .15s ease, width .15s ease;
   user-select: none;
   z-index: 10;
 }
 
-.resize-handle:hover,
-.resize-handle.dragging {
-  background: var(--blue);
-}
+.resize-handle:hover { background: var(--blue); }
 
+/* ‹ › arrows hint */
 .resize-grip {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 2px;
   pointer-events: none;
+  color: var(--text-dim);
+  font-size: 10px;
+  line-height: 1;
 }
 
-.resize-grip::before,
-.resize-grip::after {
-  content: '';
-  display: block;
-  width: 2px;
-  height: 14px;
-  background: rgba(255,255,255,.7);
-  border-radius: 2px;
-}
+.resize-handle:hover .resize-grip { color: #fff; }
 
-.resize-handle:not(:hover):not(.dragging) .resize-grip::before,
-.resize-handle:not(:hover):not(.dragging) .resize-grip::after {
-  background: var(--text-dim);
-}
+.resize-grip::before { content: '‹'; }
+.resize-grip::after  { content: '›'; }
 
 /* =============================================
    LEFT PANEL
