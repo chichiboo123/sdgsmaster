@@ -1,3 +1,18 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+  <!-- Globe outer ring -->
+  <circle cx="90" cy="86" r="54" stroke="rgba(255,255,255,0.95)" stroke-width="5.5" fill="none"/>
+  <!-- Latitude lines -->
+  <ellipse cx="90" cy="86" rx="54" ry="23" stroke="rgba(255,255,255,0.45)" stroke-width="3" fill="none"/>
+  <!-- Meridian -->
+  <line x1="90" y1="32" x2="90" y2="140" stroke="rgba(255,255,255,0.45)" stroke-width="3"/>
+  <!-- Leaf / SDG growth symbol -->
+  <path d="M68 114 Q71 83 104 72 Q99 106 68 114Z" fill="rgba(255,255,255,0.95)"/>
+  <path d="M68 114 Q90 95 104 72" stroke="rgba(255,255,255,0.55)" stroke-width="2.5" fill="none"/>
 </svg>

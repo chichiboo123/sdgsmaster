@@ -98,10 +98,10 @@ body {
 }
 
 .brand-title {
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -.3px;
+  letter-spacing: -.4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -155,35 +155,52 @@ body {
 .step-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .step-arrow { color: var(--text-dim); font-size: 10px; padding: 0 1px; }
 
-/* Lang switcher */
+/* Lang switcher — KRDS segmented control */
 .lang-sw {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   background: var(--surface-alt);
   border: 1.5px solid var(--border);
-  border-radius: 99px;
-  padding: 3px;
-  gap: 2px;
+  border-radius: 8px;
+  overflow: hidden;
+  gap: 0;
 }
 
 .lang-btn {
   border: none;
+  border-right: 1px solid var(--border);
   background: transparent;
-  border-radius: 99px;
-  padding: 4px 9px;
-  font-size: 11px;
+  border-radius: 0;
+  min-width: 38px;
+  height: 36px;
+  padding: 0 10px;
+  font-size: 13px;
   font-weight: 700;
   font-family: var(--font);
-  color: var(--text-dim);
+  color: var(--text-sub);
   cursor: pointer;
-  transition: var(--t);
+  transition: background var(--t), color var(--t);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.lang-btn:hover { color: var(--blue); }
+.lang-btn:last-child { border-right: none; }
+
+.lang-btn:hover { background: var(--blue-lt); color: var(--blue); }
+
 .lang-btn.active {
-  background: var(--surface);
-  color: var(--blue);
-  box-shadow: var(--sh-xs);
+  background: var(--blue);
+  color: #fff;
+  font-weight: 800;
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+  z-index: 1;
+  position: relative;
 }
 
 /* =============================================
@@ -191,9 +208,49 @@ body {
 ============================================= */
 .split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: var(--left-w, 50%) 6px 1fr;
   flex: 1;
   min-height: 0;
+}
+
+/* Resize handle */
+.resize-handle {
+  cursor: col-resize;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background .15s ease;
+  user-select: none;
+  z-index: 10;
+}
+
+.resize-handle:hover,
+.resize-handle.dragging {
+  background: var(--blue);
+}
+
+.resize-grip {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.resize-grip::before,
+.resize-grip::after {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 14px;
+  background: rgba(255,255,255,.7);
+  border-radius: 2px;
+}
+
+.resize-handle:not(:hover):not(.dragging) .resize-grip::before,
+.resize-handle:not(:hover):not(.dragging) .resize-grip::after {
+  background: var(--text-dim);
 }
 
 /* =============================================
@@ -466,9 +523,9 @@ body {
 .ci-pink   { background: var(--pink-lt); }
 
 .card-head-text h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -.3px;
+  letter-spacing: -.4px;
   line-height: 1.3;
 }
 
@@ -880,11 +937,87 @@ textarea.f-textarea {
   text-align: center;
   font-size: 11px;
   color: var(--text-dim);
-  margin-top: 7px;
+  margin-top: 8px;
   line-height: 1.6;
 }
 
 .copy-hint strong { color: var(--blue); }
+
+/* Export section */
+.export-section {
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.export-section-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-sub);
+  background: var(--surface-alt);
+  padding: 8px 14px;
+  border-bottom: 1.5px solid var(--border);
+  letter-spacing: -.1px;
+}
+
+.export-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.export-row:last-child { border-bottom: none; }
+
+.export-type-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+
+.export-btns {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.btn-export {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: var(--t);
+  white-space: nowrap;
+}
+
+.export-btn-icon { font-size: 14px; flex-shrink: 0; }
+
+.btn-export:not(:disabled):hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-lt);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-xs);
+}
+
+.btn-export:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
 
 /* =============================================
    FOOTER
@@ -1108,12 +1241,14 @@ textarea.f-textarea {
    RESPONSIVE — TABLET
 ============================================= */
 @media (max-width: 1024px) {
-  .brand-title { font-size: 13px; }
+  .brand-title { font-size: 16px; }
   .step-chips  { display: none; }
 }
 
 @media (max-width: 900px) {
   .split { grid-template-columns: 1fr; }
+
+  .resize-handle { display: none; }
 
   .panel-left {
     max-height: none;
@@ -1137,10 +1272,17 @@ textarea.f-textarea {
   :root { --header-h: 56px; }
 
   .header { padding: 0 14px; gap: 8px; }
-  .brand-title { font-size: 13px; }
+  .brand-title { font-size: 15px; }
   .brand-badge { font-size: 10px; padding: 4px 8px; }
 
-  .lang-btn { padding: 4px 7px; font-size: 10px; }
+  /* KRDS: 모바일에서도 언어버튼 충분한 터치 타깃 */
+  .lang-sw { border-radius: 6px; }
+  .lang-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
 
   .panel-left { padding: 16px 14px 28px; }
 
@@ -1158,8 +1300,15 @@ textarea.f-textarea {
   .sdg-lbl { font-size: 7.5px; }
 
   .card { padding: 18px; border-radius: var(--r-lg); }
+  .card-head-text h2 { font-size: 16px; }
 
   .btn-make { font-size: 14px; padding: 13px; }
+
+  /* Export section on mobile */
+  .export-row { flex-wrap: wrap; gap: 7px; }
+  .export-type-label { min-width: 100%; font-size: 11px; }
+  .export-btns { width: 100%; }
+  .btn-export { font-size: 11px; padding: 8px 6px; }
 
   .panel-right {
     height: 75vw;

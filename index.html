@@ -49,18 +49,18 @@
         </span>
       </nav>
 
-      <!-- Language switcher -->
-      <div class="lang-sw" role="group" aria-label="Language">
-        <button type="button" class="lang-btn active" data-lang="ko" aria-label="한국어">한국어</button>
-        <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
-        <button type="button" class="lang-btn" data-lang="ja" aria-label="日本語">日本語</button>
-        <button type="button" class="lang-btn" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+      <!-- Language switcher (KRDS segmented control) -->
+      <div class="lang-sw" role="radiogroup" aria-label="언어 선택 / Language">
+        <button type="button" class="lang-btn active" data-lang="ko" role="radio" aria-checked="true" aria-label="한국어">KO</button>
+        <button type="button" class="lang-btn" data-lang="en" role="radio" aria-checked="false" aria-label="English">EN</button>
+        <button type="button" class="lang-btn" data-lang="ja" role="radio" aria-checked="false" aria-label="日本語">JA</button>
+        <button type="button" class="lang-btn" data-lang="id" role="radio" aria-checked="false" aria-label="Bahasa Indonesia">ID</button>
       </div>
     </div>
   </header>
 
   <!-- ===== TWO-COLUMN SPLIT ===== -->
-  <div class="split">
+  <div class="split" id="split">
 
     <!-- ===== LEFT PANEL — INPUT ===== -->
     <div class="panel-left">
@@ -100,7 +100,7 @@
           <input type="text" id="inp-name" class="f-input"
             data-i18n-placeholder="placeholderName"
             placeholder="예: 김지우, 환경지킴이123"
-            maxlength="20" autocomplete="nickname" />
+            maxlength="20" autocomplete="off" />
           <div class="err-msg" id="e-name" data-i18n="errName">이름을 입력해 주세요.</div>
         </div>
 
@@ -221,9 +221,36 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-copy" id="btn-copy" disabled>
-          <span data-i18n="btnCopy">📋  카드 이미지를 클립보드에 복사</span>
-        </button>
+        <!-- Export section -->
+        <div class="export-section" id="export-section">
+          <div class="export-section-title" data-i18n="exportTitle">📤 내보내기</div>
+          <div class="export-row">
+            <span class="export-type-label" data-i18n="exportTxtLabel">📝 TXT</span>
+            <div class="export-btns">
+              <button type="button" class="btn-export" id="btn-txt-copy" disabled>
+                <span class="export-btn-icon">📋</span>
+                <span data-i18n="btnClipboard">클립보드 복사</span>
+              </button>
+              <button type="button" class="btn-export" id="btn-txt-dl" disabled>
+                <span class="export-btn-icon">💾</span>
+                <span data-i18n="btnDownload">다운로드</span>
+              </button>
+            </div>
+          </div>
+          <div class="export-row">
+            <span class="export-type-label" data-i18n="exportImgLabel">🖼️ 이미지</span>
+            <div class="export-btns">
+              <button type="button" class="btn-export" id="btn-img-copy" disabled>
+                <span class="export-btn-icon">📋</span>
+                <span data-i18n="btnClipboard">클립보드 복사</span>
+              </button>
+              <button type="button" class="btn-export" id="btn-img-dl" disabled>
+                <span class="export-btn-icon">💾</span>
+                <span data-i18n="btnDownload">다운로드</span>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <p class="copy-hint">
           <span data-i18n="copyHint">복사 후 패들렛에서 <strong>Ctrl+V</strong>로 붙여넣기!</span>
@@ -231,6 +258,11 @@
       </div>
 
     </div><!-- /panel-left -->
+
+    <!-- ===== RESIZE HANDLE ===== -->
+    <div class="resize-handle" id="resize-handle" aria-hidden="true" title="드래그하여 크기 조절">
+      <div class="resize-grip"></div>
+    </div>
 
     <!-- ===== RIGHT PANEL — PADLET ===== -->
     <div class="panel-right" id="panel-right">
