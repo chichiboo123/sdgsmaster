@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyI18n();
   loadPadletAuto();
   bindEvents();
+  initResizeHandle();
   refreshProgress();
 });
 
@@ -62,7 +63,9 @@ function switchLang(lang) {
   document.documentElement.lang = lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : lang === 'id' ? 'id' : 'en';
 
   document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
+    const active = b.dataset.lang === lang;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-checked', active ? 'true' : 'false');
   });
 
   applyI18n();
@@ -221,22 +224,78 @@ function makeCard() {
     </div>`;
 
   cardReady = true;
-  document.getElementById('btn-copy').disabled = false;
+  ['btn-txt-copy', 'btn-txt-dl', 'btn-img-copy', 'btn-img-dl'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = false;
+  });
   refreshProgress();
   showToast('✨', t('toastCardDone'));
   cpw.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* =============================================
-   COPY CARD
+   EXPORT — TXT
 ============================================= */
-async function copyCard() {
+function buildTxtContent() {
+  const name   = v('inp-name');
+  const sit    = v('inp-sit');
+  const action = v('inp-action');
+  const today  = new Date().toLocaleDateString(
+    getLang() === 'ko' ? 'ko-KR' :
+    getLang() === 'ja' ? 'ja-JP' :
+    getLang() === 'id' ? 'id-ID' : 'en-US',
+    { year:'numeric', month:'long', day:'numeric' }
+  );
+  const lang = getLang();
+  const lines = [
+    `[SDGs Master] Insight Card`,
+    `${'='.repeat(32)}`,
+    `${lang === 'ko' ? '이름' : lang === 'ja' ? '名前' : lang === 'id' ? 'Nama' : 'Name'}: ${name}`,
+    `${lang === 'ko' ? '날짜' : lang === 'ja' ? '日付' : lang === 'id' ? 'Tanggal' : 'Date'}: ${today}`,
+    `${lang === 'ko' ? '발견 장소' : lang === 'ja' ? '発見場所' : lang === 'id' ? 'Tempat' : 'Where'}: ${getCatDisplay()}`,
+    `SDG Goal ${selSDG.n}: ${selSDG.labels[lang]}`,
+    ``,
+    `[${lang === 'ko' ? '상황' : lang === 'ja' ? '状況' : lang === 'id' ? 'Situasi' : 'Situation'}]`,
+    sit,
+    ``,
+    `[${lang === 'ko' ? '나의 생각 & 실천' : lang === 'ja' ? 'わたしの考え' : lang === 'id' ? 'Pikiran & Tindakan' : 'Thoughts & Actions'}]`,
+    action,
+    ``,
+    `SDGs · ${lang === 'ko' ? '지속가능발전목표' : lang === 'ja' ? '持続可能な開発目標' : lang === 'id' ? 'Tujuan Pembangunan Berkelanjutan' : 'Sustainable Development Goals'}`,
+  ];
+  return lines.join('\n');
+}
+
+async function exportTxt(mode) {
+  if (!selSDG) return;
+  const content = buildTxtContent();
+  if (mode === 'clipboard') {
+    try {
+      await navigator.clipboard.writeText(content);
+      showToast('📋', t('toastTxtCopied'));
+    } catch {
+      showToast('⚠️', t('toastCopyFail'));
+    }
+  } else {
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'sdgs-master-card.txt'; a.click();
+    URL.revokeObjectURL(url);
+    showToast('💾', t('toastTxtDownloaded'));
+  }
+}
+
+/* =============================================
+   EXPORT — IMAGE
+============================================= */
+async function exportImage(mode) {
   const card = document.getElementById('icard');
   if (!card) return;
 
-  const btn = document.getElementById('btn-copy');
-  btn.disabled = true;
-  btn.textContent = t('btnCopying');
+  const btnId = mode === 'clipboard' ? 'btn-img-copy' : 'btn-img-dl';
+  const btn   = document.getElementById(btnId);
+  if (btn) btn.disabled = true;
 
   try {
     const canvas = await html2canvas(card, {
@@ -247,28 +306,90 @@ async function copyCard() {
     });
 
     canvas.toBlob(async blob => {
-      try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ]);
-        showToast('📋', t('toastCopied'));
-      } catch {
+      if (mode === 'clipboard') {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('📋', t('toastCopied'));
+        } catch {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'sdgs-master-card.png'; a.click();
+          URL.revokeObjectURL(url);
+          showToast('💾', t('toastImgDownloaded'));
+        }
+      } else {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url; a.download = 'sdgs-master-card.png'; a.click();
         URL.revokeObjectURL(url);
-        showToast('💾', t('toastDownloaded'));
+        showToast('💾', t('toastImgDownloaded'));
       }
-      btn.disabled = false;
-      btn.innerHTML = t('btnCopy');
+      if (btn) btn.disabled = false;
     }, 'image/png');
 
   } catch (err) {
     console.error(err);
-    btn.disabled = false;
-    btn.innerHTML = t('btnCopy');
+    if (btn) btn.disabled = false;
     showToast('⚠️', t('toastCopyFail'));
   }
+}
+
+/* =============================================
+   RESIZE HANDLE
+============================================= */
+function initResizeHandle() {
+  const handle = document.getElementById('resize-handle');
+  const split  = document.getElementById('split');
+  if (!handle || !split) return;
+
+  let dragging = false;
+
+  function onMove(clientX) {
+    const rect = split.getBoundingClientRect();
+    const pct  = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 20), 80);
+    split.style.setProperty('--left-w', `${pct.toFixed(1)}%`);
+  }
+
+  handle.addEventListener('mousedown', e => {
+    dragging = true;
+    handle.classList.add('dragging');
+    document.body.style.cursor    = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    onMove(e.clientX);
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor    = '';
+    document.body.style.userSelect = '';
+  });
+
+  handle.addEventListener('touchstart', e => {
+    dragging = true;
+    handle.classList.add('dragging');
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    onMove(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('dragging');
+  });
 }
 
 /* =============================================
@@ -465,8 +586,11 @@ function bindEvents() {
   // Make card button
   document.getElementById('btn-make').addEventListener('click', makeCard);
 
-  // Copy button
-  document.getElementById('btn-copy').addEventListener('click', copyCard);
+  // Export buttons
+  document.getElementById('btn-txt-copy')?.addEventListener('click', () => exportTxt('clipboard'));
+  document.getElementById('btn-txt-dl')?.addEventListener('click',   () => exportTxt('download'));
+  document.getElementById('btn-img-copy')?.addEventListener('click', () => exportImage('clipboard'));
+  document.getElementById('btn-img-dl')?.addEventListener('click',   () => exportImage('download'));
 
   // Padlet controls
   document.getElementById('btn-padlet-newtab').addEventListener('click', openPadletNewTab);
