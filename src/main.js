@@ -215,8 +215,10 @@ function updateSDGBanner(mainSdg, subSdgs = []) {
    SDG ICON HELPERS
 ============================================= */
 function getSdgIconPath(n, lang) {
-  const folder = lang === 'ko' ? 'ko' : 'other';
-  return `/sdg-icons/${folder}/sdg-${String(n).padStart(2, '0')}.png`;
+  if (lang === 'ko') {
+    return `/sdg-icons/ko/logo-${n}_700x700.png`;
+  }
+  return `/sdg-icons/other/E-WEB-Goal-${String(n).padStart(2, '0')}.png`;
 }
 
 async function checkLocalIcon(path) {
