@@ -46,11 +46,14 @@ function buildSDGGrid() {
   grid.innerHTML = SDGS.map(s => {
     const [t1, t2] = s.tips[lang].split('\n');
     const aria = `${s.n}. ${esc(s.labels[lang])}`;
+    const iconPath = getSdgIconPath(s.n, lang);
     return `
       <button type="button" class="sdg-btn" id="sdg${s.n}" style="background:${s.col}"
         data-sdg="${s.n}" aria-label="${aria}" aria-pressed="false">
-        <span class="sdg-num">${s.n}</span>
-        <span class="sdg-lbl">${esc(s.labels[lang])}</span>
+        <img class="sdg-btn-icon" src="${iconPath}" alt="" aria-hidden="true"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='';this.nextElementSibling.nextElementSibling.style.display=''">
+        <span class="sdg-num" style="display:none">${s.n}</span>
+        <span class="sdg-lbl" style="display:none">${esc(s.labels[lang])}</span>
         <div class="sdg-tip" role="tooltip"><strong>${esc(t1)}</strong><br/>${esc(t2)}</div>
       </button>`;
   }).join('');
@@ -209,9 +212,32 @@ function updateSDGBanner(mainSdg, subSdgs = []) {
 }
 
 /* =============================================
+   SDG ICON HELPERS
+============================================= */
+function getSdgIconPath(n, lang) {
+  const folder = lang === 'ko' ? 'ko' : 'other';
+  return `/sdg-icons/${folder}/sdg-${String(n).padStart(2, '0')}.png`;
+}
+
+async function checkLocalIcon(path) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const timer = setTimeout(() => resolve(false), 2000);
+    img.onload = () => { clearTimeout(timer); resolve(true); };
+    img.onerror = () => { clearTimeout(timer); resolve(false); };
+    img.src = path;
+  });
+}
+
+/* =============================================
    SDG ICON PRELOAD (data URL for html2canvas)
 ============================================= */
 async function preloadSdgIcon(n) {
+  const lang = getLang();
+  const localPath = getSdgIconPath(n, lang);
+  const localOk = await checkLocalIcon(localPath);
+  if (localOk) return localPath;
+
   const candidates = [
     `https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-${String(n).padStart(2,'0')}.jpg`,
     `https://cdn.jsdelivr.net/gh/open-sdg/sdg-translations@master/assets/img/goals/en/${n}.png`,
