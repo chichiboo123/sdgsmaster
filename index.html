@@ -57,13 +57,16 @@
         </svg>
       </button>
 
-      <!-- Language switcher (KRDS segmented control) -->
-      <div class="lang-sw" role="radiogroup" aria-label="언어 선택 / Language">
-        <button type="button" class="lang-btn active" data-lang="ko" role="radio" aria-checked="true" aria-label="한국어">KO</button>
-        <button type="button" class="lang-btn" data-lang="en" role="radio" aria-checked="false" aria-label="English">EN</button>
-        <button type="button" class="lang-btn" data-lang="ja" role="radio" aria-checked="false" aria-label="日本語">JA</button>
-        <button type="button" class="lang-btn" data-lang="id" role="radio" aria-checked="false" aria-label="Bahasa Indonesia">ID</button>
-      </div>
+      <!-- Language switcher — dropdown -->
+      <select id="lang-select" class="lang-select" aria-label="언어 선택 / Language">
+        <option value="ko">🇰🇷 KO</option>
+        <option value="en">🌐 EN</option>
+        <option value="ja">🇯🇵 JA</option>
+        <option value="id">🇮🇩 ID</option>
+      </select>
+
+      <!-- Help / Usage button -->
+      <button type="button" class="help-btn" id="btn-help" data-i18n="helpBtnLabel">사용법</button>
     </div>
   </header>
 
@@ -159,6 +162,18 @@
             placeholder="예: 공원에서 쓰레기를 분리배출하는 사람들을 봤어요."
             maxlength="300" rows="4"></textarea>
           <div class="err-msg" id="e-sit" data-i18n="errSituation">상황을 입력해 주세요.</div>
+        </div>
+
+        <!-- Source (optional) -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelSource">📎 출처</span>
+            <span class="opt-label" data-i18n="optLabel">선택</span>
+          </div>
+          <textarea id="inp-source" class="f-textarea"
+            data-i18n-placeholder="placeholderSource"
+            placeholder="출처표기 도우미에서 만든 출처를 붙여넣으세요"
+            maxlength="400" rows="2"></textarea>
         </div>
       </div>
 
@@ -334,6 +349,22 @@
   </footer>
 
 </div><!-- /app -->
+
+<!-- ===== HELP MODAL ===== -->
+<div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true">
+  <div class="modal-box help-modal-box">
+    <div class="modal-head">
+      <span class="modal-title help-modal-title" data-i18n="helpModalTitle">SDGs 마스터 사용법</span>
+      <button type="button" class="modal-close" id="btn-help-close" aria-label="Close">✕</button>
+    </div>
+    <div class="help-steps">
+      <div class="help-step" data-i18n="helpStep1">📍 1단계: 이름, 발견 장소, 상황을 입력하고 출처가 있으면 붙여넣어요.</div>
+      <div class="help-step" data-i18n="helpStep2">🌍 2단계: 관련 SDG 목표를 선택해요. 첫 번째 클릭이 메인(★), 추가 클릭은 서브(+), 다시 클릭하면 해제돼요.</div>
+      <div class="help-step" data-i18n="helpStep3">✨ 3단계: 마스터 카드 만들기 버튼을 눌러 카드를 완성하고, 이미지를 복사해 패들렛에 Ctrl+V로 붙여넣어요.</div>
+    </div>
+    <div class="help-cite-tip" data-i18n="helpCiteTip">💡 출처표기 도우미: 상단 인용 아이콘을 클릭하면 책·웹·신문 출처를 쉽게 만들 수 있어요.</div>
+  </div>
+</div>
 
 <!-- ===== CITE MODAL ===== -->
 <div class="modal-overlay" id="cite-modal" role="dialog" aria-modal="true">

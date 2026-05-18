@@ -177,52 +177,55 @@ body {
   background: var(--blue-lt);
 }
 
-/* Lang switcher — KRDS segmented control */
-.lang-sw {
-  display: flex;
-  align-items: stretch;
-  background: var(--surface-alt);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  gap: 0;
-}
-
-.lang-btn {
-  border: none;
-  border-right: 1px solid var(--border);
-  background: transparent;
-  border-radius: 0;
-  min-width: 38px;
+/* Lang switcher — dropdown */
+.lang-select {
   height: 36px;
   padding: 0 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font);
   font-size: 13px;
   font-weight: 700;
-  font-family: var(--font);
-  color: var(--text-sub);
   cursor: pointer;
-  transition: background var(--t), color var(--t);
+  outline: none;
+  transition: var(--t);
+  appearance: auto;
+}
+
+.lang-select:hover {
+  border-color: var(--blue);
+  background: var(--blue-lt);
+  color: var(--blue);
+}
+
+.lang-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(91,141,239,.15);
+}
+
+/* Help / Usage button */
+.help-btn {
+  height: 36px;
+  padding: 0 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  color: var(--text-sub);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--t);
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
 }
 
-.lang-btn:last-child { border-right: none; }
-
-.lang-btn:hover { background: var(--blue-lt); color: var(--blue); }
-
-.lang-btn.active {
-  background: var(--blue);
-  color: #fff;
-  font-weight: 800;
-}
-
-.lang-btn:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-  z-index: 1;
-  position: relative;
+.help-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-lt);
 }
 
 /* =============================================
@@ -565,6 +568,16 @@ body {
 }
 
 .req { color: var(--pink); font-size: 14px; line-height: 1; }
+.opt-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  line-height: 1.6;
+}
 
 input.f-input,
 textarea.f-textarea {
@@ -951,8 +964,16 @@ textarea.f-textarea {
   font-size: 14.5px;
   font-weight: 800;
   color: var(--text);
-  margin-bottom: 11px;
+  margin-bottom: 7px;
   line-height: 1.6;
+}
+
+.ic-source {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 9px;
+  word-break: break-word;
 }
 
 .ic-action-label {
@@ -1004,8 +1025,8 @@ textarea.f-textarea {
   background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
   color: #fff;
   width: 100%;
-  padding: 14px 24px;
-  font-size: 15px;
+  padding: 10px 20px;
+  font-size: 14px;
   box-shadow: 0 4px 18px rgba(91,141,239,.3);
 }
 
@@ -1245,6 +1266,44 @@ textarea.f-textarea {
 .cite-copy-btn:hover {
   background: var(--blue-dk);
   border-color: var(--blue-dk);
+}
+
+/* =============================================
+   HELP MODAL
+============================================= */
+.help-modal-box {
+  max-width: 480px;
+}
+
+.modal-title.help-modal-title::before { content: '❓'; }
+
+.help-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.help-step {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.65;
+  font-weight: 600;
+}
+
+.help-cite-tip {
+  background: linear-gradient(135deg, #EBF1FF, #F3EDFF);
+  border: 1.5px solid var(--blue);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-size: 12.5px;
+  color: var(--text-sub);
+  line-height: 1.65;
+  font-weight: 600;
 }
 
 /* =============================================
@@ -1503,14 +1562,8 @@ textarea.f-textarea {
   .brand-title { font-size: 15px; }
   .brand-badge { font-size: 10px; padding: 4px 8px; }
 
-  /* KRDS: 모바일에서도 언어버튼 충분한 터치 타깃 */
-  .lang-sw { border-radius: 6px; }
-  .lang-btn {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 8px;
-    font-size: 12px;
-  }
+  .lang-select { height: 34px; font-size: 12px; padding: 0 8px; }
+  .help-btn { height: 34px; padding: 0 10px; font-size: 12px; }
 
   .panel-left { padding: 16px 14px 28px; }
 
@@ -1530,7 +1583,7 @@ textarea.f-textarea {
   .card { padding: 18px; border-radius: var(--r-lg); }
   .card-head-text h2 { font-size: 16px; }
 
-  .btn-make { font-size: 14px; padding: 13px; }
+  .btn-make { font-size: 13px; padding: 9px; }
 
   /* Export section on mobile */
   .export-row { flex-wrap: wrap; gap: 7px; }
