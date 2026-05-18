@@ -294,7 +294,7 @@ function makeCard() {
     </div>`;
 
   cardReady = true;
-  ['btn-txt-copy', 'btn-txt-dl', 'btn-img-copy', 'btn-img-dl'].forEach(id => {
+  ['btn-txt', 'btn-img'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = false;
   });
@@ -373,8 +373,7 @@ async function exportImage(mode) {
   const card = document.getElementById('icard');
   if (!card) return;
 
-  const btnId = mode === 'clipboard' ? 'btn-img-copy' : 'btn-img-dl';
-  const btn   = document.getElementById(btnId);
+  const btn = document.getElementById('btn-img');
   if (btn) btn.disabled = true;
 
   try {
@@ -582,9 +581,9 @@ function handleFooterClick(e) {
    PROGRESS INDICATOR
 ============================================= */
 function refreshProgress() {
-  const s1 = selMainSDG && v('inp-action');
-  const s2 = v('inp-name') && selCat &&
-    (selCat !== 'other' || v('cat-other-input')) && v('inp-sit');
+  const s1 = !!selMainSDG;
+  const s2 = !!(v('inp-name') && selCat &&
+    (selCat !== 'other' || v('cat-other-input')) && v('inp-sit'));
   const s3 = cardReady;
 
   setPB('pb1', 'hchip1', s1, true);
@@ -786,11 +785,24 @@ function bindEvents() {
   // Make card button
   document.getElementById('btn-make').addEventListener('click', makeCard);
 
-  // Export buttons
-  document.getElementById('btn-txt-copy')?.addEventListener('click', () => exportTxt('clipboard'));
-  document.getElementById('btn-txt-dl')?.addEventListener('click',   () => exportTxt('download'));
-  document.getElementById('btn-img-copy')?.addEventListener('click', () => exportImage('clipboard'));
-  document.getElementById('btn-img-dl')?.addEventListener('click',   () => exportImage('download'));
+  // Export dropdown toggles
+  document.getElementById('btn-txt')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleExportDd('txt');
+  });
+  document.getElementById('btn-img')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleExportDd('img');
+  });
+
+  // Export dropdown items
+  document.getElementById('btn-txt-copy')?.addEventListener('click', () => { closeExportDds(); exportTxt('clipboard'); });
+  document.getElementById('btn-txt-dl')?.addEventListener('click',   () => { closeExportDds(); exportTxt('download'); });
+  document.getElementById('btn-img-copy')?.addEventListener('click', () => { closeExportDds(); exportImage('clipboard'); });
+  document.getElementById('btn-img-dl')?.addEventListener('click',   () => { closeExportDds(); exportImage('download'); });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', () => closeExportDds());
 
   // Padlet controls
   document.getElementById('btn-padlet-newtab').addEventListener('click', openPadletNewTab);
@@ -848,6 +860,22 @@ function bindEvents() {
   // Citation generate & copy
   document.getElementById('btn-cite-generate')?.addEventListener('click', generateCite);
   document.getElementById('btn-cite-copy')?.addEventListener('click', copyCite);
+}
+
+/* =============================================
+   EXPORT DROPDOWN
+============================================= */
+function toggleExportDd(type) {
+  const dd    = document.getElementById(`export-${type}-dd`);
+  const other = document.getElementById(`export-${type === 'txt' ? 'img' : 'txt'}-dd`);
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  if (other) other.classList.remove('open');
+  dd.classList.toggle('open', !isOpen);
+}
+
+function closeExportDds() {
+  document.querySelectorAll('.export-dropdown').forEach(d => d.classList.remove('open'));
 }
 
 /* =============================================
