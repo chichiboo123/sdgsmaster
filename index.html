@@ -59,10 +59,10 @@
 
       <!-- Language switcher — dropdown -->
       <select id="lang-select" class="lang-select" aria-label="언어 선택 / Language">
-        <option value="ko">🇰🇷 KO</option>
-        <option value="en">🌐 EN</option>
-        <option value="ja">🇯🇵 JA</option>
-        <option value="id">🇮🇩 ID</option>
+        <option value="ko">KO</option>
+        <option value="en">EN</option>
+        <option value="ja">JA</option>
+        <option value="id">ID</option>
       </select>
 
       <!-- Help / Usage button -->
@@ -95,10 +95,53 @@
       <!-- ===== STEP 1 ===== -->
       <div class="card">
         <div class="card-head">
+          <div class="card-icon ci-green">🔗</div>
+          <div class="card-head-text">
+            <h2 data-i18n="step1Title">1단계 · SDGs와 연결 (Connect)</h2>
+            <p data-i18n="step1Desc">아이콘에 마우스를 올려 설명을 보고, 관련 목표 1개를 선택하세요</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelSDG">🌍 가장 관련 깊은 SDG 목표는?</span>
+            <span class="req">*</span>
+          </div>
+
+          <!-- SDG selected banner -->
+          <div class="sdg-banner" id="sdg-banner">
+            <span class="sdg-banner-dot" id="sdg-banner-dot"></span>
+            <span id="sdg-banner-text"></span>
+          </div>
+
+          <!-- SDG grid (built by JS) -->
+          <div class="sdg-grid" id="sdg-grid"></div>
+          <div class="err-msg" id="e-sdg" data-i18n="errSDG">SDG 목표를 선택해 주세요.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Action / thoughts -->
+        <div class="field">
+          <div class="field-label">
+            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
+            <span class="req">*</span>
+          </div>
+          <textarea id="inp-action" class="f-textarea"
+            data-i18n-placeholder="placeholderAction"
+            placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
+            maxlength="300" rows="4"></textarea>
+          <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2 ===== -->
+      <div class="card">
+        <div class="card-head">
           <div class="card-icon ci-blue">🔍</div>
           <div class="card-head-text">
-            <h2 data-i18n="step1Title">1단계 · 사례 발견 (Discover)</h2>
-            <p data-i18n="step1Desc">일상 속에서 SDGs와 관련된 사례를 찾아보세요</p>
+            <h2 data-i18n="step2Title">2단계 · 사례 발견 (Discover)</h2>
+            <p data-i18n="step2Desc">일상 속에서 SDGs와 관련된 사례를 찾아보세요</p>
           </div>
         </div>
 
@@ -174,49 +217,6 @@
             data-i18n-placeholder="placeholderSource"
             placeholder="출처표기 도우미에서 만든 출처를 붙여넣으세요"
             maxlength="400" rows="2"></textarea>
-        </div>
-      </div>
-
-      <!-- ===== STEP 2 ===== -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon ci-green">🔗</div>
-          <div class="card-head-text">
-            <h2 data-i18n="step2Title">2단계 · SDGs와 연결 (Connect)</h2>
-            <p data-i18n="step2Desc">아이콘에 마우스를 올려 설명을 보고, 관련 목표 1개를 선택하세요</p>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="field-label">
-            <span data-i18n="labelSDG">🌍 가장 관련 깊은 SDG 목표는?</span>
-            <span class="req">*</span>
-          </div>
-
-          <!-- SDG selected banner -->
-          <div class="sdg-banner" id="sdg-banner">
-            <span class="sdg-banner-dot" id="sdg-banner-dot"></span>
-            <span id="sdg-banner-text"></span>
-          </div>
-
-          <!-- SDG grid (built by JS) -->
-          <div class="sdg-grid" id="sdg-grid"></div>
-          <div class="err-msg" id="e-sdg" data-i18n="errSDG">SDG 목표를 선택해 주세요.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Action / thoughts -->
-        <div class="field">
-          <div class="field-label">
-            <span data-i18n="labelAction">💡 나의 생각 &amp; 우리가 할 수 있는 실천</span>
-            <span class="req">*</span>
-          </div>
-          <textarea id="inp-action" class="f-textarea"
-            data-i18n-placeholder="placeholderAction"
-            placeholder="예: 텀블러 하나가 바다 생물을 지켜요!"
-            maxlength="300" rows="4"></textarea>
-          <div class="err-msg" id="e-action" data-i18n="errAction">생각이나 실천 방안을 입력해 주세요.</div>
         </div>
       </div>
 

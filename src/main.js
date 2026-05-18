@@ -582,9 +582,9 @@ function handleFooterClick(e) {
    PROGRESS INDICATOR
 ============================================= */
 function refreshProgress() {
-  const s1 = v('inp-name') && selCat &&
+  const s1 = selMainSDG && v('inp-action');
+  const s2 = v('inp-name') && selCat &&
     (selCat !== 'other' || v('cat-other-input')) && v('inp-sit');
-  const s2 = selMainSDG && v('inp-action');
   const s3 = cardReady;
 
   setPB('pb1', 'hchip1', s1, true);
