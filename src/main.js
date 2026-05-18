@@ -411,58 +411,20 @@ async function exportImage(mode) {
 }
 
 /* =============================================
-   RESIZE HANDLE
+   RESIZE HANDLE — click to cycle presets
 ============================================= */
 function initResizeHandle() {
   const handle = document.getElementById('resize-handle');
   const split  = document.getElementById('split');
   if (!handle || !split) return;
 
-  let dragging = false;
+  const presets = ['33%', '50%', '67%'];
+  let idx = 1; // start at 50%
 
-  function onMove(clientX) {
-    const rect = split.getBoundingClientRect();
-    const pct  = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 20), 80);
-    split.style.setProperty('--left-w', `${pct.toFixed(1)}%`);
-  }
-
-  handle.addEventListener('mousedown', e => {
-    dragging = true;
-    handle.classList.add('dragging');
-    document.body.style.cursor    = 'col-resize';
-    document.body.style.userSelect = 'none';
-    e.preventDefault();
-  });
-
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    onMove(e.clientX);
-  });
-
-  document.addEventListener('mouseup', () => {
-    if (!dragging) return;
-    dragging = false;
-    handle.classList.remove('dragging');
-    document.body.style.cursor    = '';
-    document.body.style.userSelect = '';
-  });
-
-  handle.addEventListener('touchstart', e => {
-    dragging = true;
-    handle.classList.add('dragging');
-    e.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    onMove(e.touches[0].clientX);
-    e.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchend', () => {
-    if (!dragging) return;
-    dragging = false;
-    handle.classList.remove('dragging');
+  handle.addEventListener('click', () => {
+    idx = (idx + 1) % presets.length;
+    split.style.setProperty('--left-w', presets[idx]);
+    handle.dataset.preset = presets[idx];
   });
 }
 
